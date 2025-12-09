@@ -1,4 +1,5 @@
 using UnityEngine;
+using Crest;
 
 [RequireComponent(typeof(Rigidbody))]
 public class DoublePaddleSystem : MonoBehaviour
@@ -6,148 +7,355 @@ public class DoublePaddleSystem : MonoBehaviour
     [System.Serializable]
     public class Blade
     {
-        public Transform bladeRoot;     // РєРѕСЂРµРЅСЊ Р»РѕРїР°СЃС‚Рё (РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ СѓРіР»Р°)
-        public Transform bladeTip;      // С‚РѕС‡РєР° РїРѕРіСЂСѓР¶РµРЅРёСЏ
-        public bool isLeft;
+        public Transform bladeRoot;
+        public Transform bladeTip;
+        [HideInInspector] public Vector3 constrainedPosition;
     }
 
     [Header("Controllers")]
     public Transform leftController;
     public Transform rightController;
 
-    [Header("Paddle Object")]
-    public Transform doublePaddle; // РєРѕСЂРЅРµРІРѕР№ РѕР±СЉРµРєС‚ РІРµСЃР»Р° (СЃ Р»РµРІРѕР№ Рё РїСЂР°РІРѕР№ Р»РѕРїР°СЃС‚СЊСЋ)
+    [Header("Paddle")]
+    public Transform doublePaddle;
 
     [Header("Blades")]
     public Blade leftBlade;
     public Blade rightBlade;
 
-    [Header("Paddle Physics")]
-    public float waterLevel = 0f;
+    [Header("Hand Constraints")]
+    [Tooltip("Минимальное расстояние между руками для активации весла")]
+    public float minHandDistance = 0.4f;
+    [Tooltip("Максимальное допустимое расстояние между руками")]
+    public float maxHandDistance = 1.5f;
+
+    [Header("Physics")]
     public float bladeDepthThreshold = -0.05f;
     public float maxEffectiveSpeed = 2.5f;
     public float forceMultiplier = 60f;
     public float recoveryDrag = 0.5f;
+    public float minEfficiency = 0.1f;
+    public float maxEfficiency = 1.0f;
 
-    [Header("Angle Efficiency")]
-    public float minEfficiency = 0.1f; // РјРёРЅРёРјР°Р»СЊРЅР°СЏ СЌС„С„РµРєС‚РёРІРЅРѕСЃС‚СЊ (РґР°Р¶Рµ "РїРµСЂРѕРј")
-    public float maxEfficiency = 1.0f; // РєРѕРіРґР° Р»РѕРїР°СЃС‚СЊ РїР»РѕСЃРєР°СЏ
+    [Header("Collision Prevention")]
+    [Tooltip("Слои с которыми весло НЕ должно проходить (каяк и т.д.)")]
+    public LayerMask blockingLayers;
+    [Tooltip("Радиус проверки столкновений для лопастей")]
+    public float bladeCollisionRadius = 0.08f;
+    [Tooltip("Радиус проверки столкновений для стержня весла")]
+    public float shaftCollisionRadius = 0.03f;
+    [Tooltip("Количество точек проверки на стержне весла")]
+    public int shaftCheckPoints = 5;
+
+    [Header("Crest Sampling")]
+    public float minSpatialLength = 1f;
+
+    [Header("Debug")]
+    public bool showDebugInfo = true;
 
     private Rigidbody rb;
     private Vector3 lastLeftTip, lastRightTip;
     private bool leftInWater, rightInWater;
+    private bool isPaddleActive = false;
+
+    private SampleHeightHelper _leftHeightHelper, _rightHeightHelper;
+    private SampleFlowHelper _leftFlowHelper, _rightFlowHelper;
+    private bool _initialized = false;
+
+    // Для ограничения позиции весла
+    private Vector3 constrainedLeftPos, constrainedRightPos;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        if (leftBlade.bladeTip != null) lastLeftTip = leftBlade.bladeTip.position;
-        if (rightBlade.bladeTip != null) lastRightTip = rightBlade.bladeTip.position;
+        if (leftBlade?.bladeTip != null) lastLeftTip = leftBlade.bladeTip.position;
+        if (rightBlade?.bladeTip != null) lastRightTip = rightBlade.bladeTip.position;
+
+        constrainedLeftPos = leftController != null ? leftController.position : Vector3.zero;
+        constrainedRightPos = rightController != null ? rightController.position : Vector3.zero;
     }
 
     void LateUpdate()
     {
-        if (leftController == null || rightController == null || doublePaddle == null)
-            return;
-    
-        // --- РџРѕР»РѕР¶РµРЅРёРµ: СЃРµСЂРµРґРёРЅР° РјРµР¶РґСѓ РєРѕРЅС‚СЂРѕР»Р»РµСЂР°РјРё ---
-        Vector3 avgPosition = (leftController.position + rightController.position) * 0.5f;
-        doublePaddle.position = avgPosition;
-    
-        // --- РџРѕРІРѕСЂРѕС‚: РѕСЃСЊ X РІРµСЃР»Р° РЅР°РїСЂР°РІР»РµРЅР° РѕС‚ Р»РµРІРѕР№ СЂСѓРєРё Рє РїСЂР°РІРѕР№ ---
-        Vector3 forwardDir = rightController.position - leftController.position;
-        if (forwardDir.magnitude < 0.01f)
+        if (leftController == null || rightController == null || doublePaddle == null) return;
+
+        // Проверяем столкновения и ограничиваем позицию
+        constrainedLeftPos = GetConstrainedPosition(leftController.position, constrainedLeftPos);
+        constrainedRightPos = GetConstrainedPosition(rightController.position, constrainedRightPos);
+
+        // Проверяем столкновение стержня весла
+        if (CheckShaftCollision(constrainedLeftPos, constrainedRightPos))
         {
-            // Р•СЃР»Рё СЂСѓРєРё СЂСЏРґРѕРј вЂ” РёСЃРїРѕР»СЊР·СѓРµРј СЃС‚Р°РЅРґР°СЂС‚РЅРѕРµ РЅР°РїСЂР°РІР»РµРЅРёРµ
-            forwardDir = transform.forward; // РёР»Рё Vector3.right
+            // Если стержень проходит через каяк, возвращаем предыдущие позиции
+            constrainedLeftPos = leftBlade.constrainedPosition;
+            constrainedRightPos = rightBlade.constrainedPosition;
         }
-    
-        // РћСЃСЊ Y вЂ” РІРІРµСЂС… (РјРѕР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РјРёСЂРѕРІРѕР№ Up, РёР»Рё РЅРѕСЂРјР°Р»СЊ Рє РІРѕРґРµ)
-        Vector3 upDir = Vector3.up;
-    
-        // РЎС‚СЂРѕРёРј РјР°С‚СЂРёС†Сѓ РїРѕРІРѕСЂРѕС‚Р°: forward = X, up = Y
-        Quaternion newRotation = Quaternion.LookRotation(forwardDir, upDir);
-    
-        // РџСЂРёРјРµРЅСЏРµРј РїРѕРІРѕСЂРѕС‚
-        doublePaddle.rotation = newRotation;
+
+        // Сохраняем текущие позиции
+        leftBlade.constrainedPosition = constrainedLeftPos;
+        rightBlade.constrainedPosition = constrainedRightPos;
+
+        float handDistance = Vector3.Distance(constrainedLeftPos, constrainedRightPos);
+
+        // Проверка минимального расстояния между руками
+        isPaddleActive = handDistance >= minHandDistance && handDistance <= maxHandDistance;
+
+        // Весло следует за ограниченными позициями
+        doublePaddle.position = (constrainedLeftPos + constrainedRightPos) * 0.5f;
+
+        Vector3 forward = constrainedRightPos - constrainedLeftPos;
+        if (forward.magnitude > 0.01f)
+        {
+            doublePaddle.rotation = Quaternion.LookRotation(forward, Vector3.up);
+        }
+
+        if (!isPaddleActive && showDebugInfo)
+        {
+            Debug.Log($"Весло неактивно! Расстояние между руками: {handDistance:F2}m (мин: {minHandDistance}m, макс: {maxHandDistance}m)");
+        }
+    }
+
+    Vector3 GetConstrainedPosition(Vector3 targetPos, Vector3 currentPos)
+    {
+        // Проверяем можно ли переместиться в новую позицию
+        Vector3 direction = targetPos - currentPos;
+        float distance = direction.magnitude;
+
+        if (distance < 0.001f) return currentPos;
+
+        // Проверяем путь от текущей до целевой позиции
+        RaycastHit hit;
+        if (Physics.SphereCast(currentPos, bladeCollisionRadius, direction.normalized, out hit, distance, blockingLayers))
+        {
+            // Столкновение! Останавливаем на границе
+            Vector3 constrainedPos = currentPos + direction.normalized * Mathf.Max(0, hit.distance - bladeCollisionRadius * 0.5f);
+
+            if (showDebugInfo)
+            {
+                Debug.DrawLine(currentPos, hit.point, Color.red, 0.1f);
+            }
+
+            return constrainedPos;
+        }
+
+        // Дополнительная проверка целевой позиции
+        if (Physics.CheckSphere(targetPos, bladeCollisionRadius, blockingLayers))
+        {
+            if (showDebugInfo)
+            {
+                Debug.DrawLine(currentPos, targetPos, Color.yellow, 0.1f);
+            }
+            return currentPos; // Оставляем на месте
+        }
+
+        return targetPos;
+    }
+
+    bool CheckShaftCollision(Vector3 leftPos, Vector3 rightPos)
+    {
+        // Проверяем стержень весла между лопастями
+        for (int i = 0; i < shaftCheckPoints; i++)
+        {
+            float t = i / (float)(shaftCheckPoints - 1);
+            Vector3 checkPoint = Vector3.Lerp(leftPos, rightPos, t);
+
+            if (Physics.CheckSphere(checkPoint, shaftCollisionRadius, blockingLayers))
+            {
+                if (showDebugInfo)
+                {
+                    Debug.DrawLine(checkPoint, checkPoint + Vector3.up * 0.1f, Color.magenta, 0.1f);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     void FixedUpdate()
     {
-        if (leftBlade.bladeTip != null)
-            ProcessBlade(leftBlade, ref lastLeftTip, ref leftInWater);
+        if (OceanRenderer.Instance == null) return;
 
-        if (rightBlade.bladeTip != null)
-            ProcessBlade(rightBlade, ref lastRightTip, ref rightInWater);
+        if (!_initialized)
+        {
+            _leftHeightHelper = new SampleHeightHelper();
+            _rightHeightHelper = new SampleHeightHelper();
+            _leftFlowHelper = new SampleFlowHelper();
+            _rightFlowHelper = new SampleFlowHelper();
+            _initialized = true;
+        }
+
+        // Применяем силу только если весло активно
+        if (!isPaddleActive)
+        {
+            leftInWater = false;
+            rightInWater = false;
+            return;
+        }
+
+        if (leftBlade?.bladeTip != null)
+            ProcessBlade(leftBlade, ref lastLeftTip, ref leftInWater, _leftHeightHelper, _leftFlowHelper);
+
+        if (rightBlade?.bladeTip != null)
+            ProcessBlade(rightBlade, ref lastRightTip, ref rightInWater, _rightHeightHelper, _rightFlowHelper);
     }
 
-    void ProcessBlade(Blade blade, ref Vector3 lastPos, ref bool inWater)
+    void ProcessBlade(Blade blade, ref Vector3 lastPos, ref bool inWater, SampleHeightHelper heightHelper, SampleFlowHelper flowHelper)
     {
         Transform tip = blade.bladeTip;
-        Vector3 currentPos = tip.position;
-        Vector3 velocity = (currentPos - lastPos) / Time.fixedDeltaTime;
-        lastPos = currentPos;
+        Vector3 current = tip.position;
+        Vector3 velocity = (current - lastPos) / Time.fixedDeltaTime;
+        lastPos = current;
 
-        bool currentlyInWater = currentPos.y < waterLevel + bladeDepthThreshold;
+        // Если лопасть внутри блокирующего объекта, не применяем силу
+        if (Physics.CheckSphere(current, bladeCollisionRadius, blockingLayers))
+        {
+            inWater = false;
+            return;
+        }
+
+        heightHelper.Init(current, minSpatialLength);
+        if (!heightHelper.Sample(out float waterHeight, out _, out Vector3 waterVelocity)) return;
+
+        // Add flow to water velocity
+        flowHelper.Init(current, minSpatialLength);
+        if (flowHelper.Sample(out Vector2 flow2D))
+        {
+            waterVelocity += new Vector3(flow2D.x, 0f, flow2D.y);
+        }
+
+        bool currentlyInWater = current.y < waterHeight + bladeDepthThreshold;
         inWater = currentlyInWater;
 
         if (currentlyInWater)
         {
-            // РќР°РїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ РІ Р»РѕРєР°Р»СЊРЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚Р°С… РљРђРЇРљРђ
-            Vector3 localVelocity = transform.InverseTransformDirection(velocity);
-            bool isPullingBack = localVelocity.z < -0.1f; // РґРІРёР¶РµРЅРёРµ РЅР°Р·Р°Рґ
+            Vector3 relVel = velocity - waterVelocity;
+            Vector3 localVel = transform.InverseTransformDirection(relVel);
+            float angleEff = CalculateBladeEfficiency(blade.bladeRoot.up);
 
-            // === РЈС‡С‘С‚ СѓРіР»Р° Р»РѕРїР°СЃС‚Рё ===
-            // РќРѕСЂРјР°Р»СЊ Рє Р»РѕРїР°СЃС‚Рё: СЃС‡РёС‚Р°РµРј, С‡С‚Рѕ "РІРІРµСЂС…" Р»РѕРїР°СЃС‚Рё = РЅР°РїСЂР°РІР»РµРЅРёРµ, РїРµСЂРїРµРЅРґРёРєСѓР»СЏСЂРЅРѕРµ РїР»РѕСЃРєРѕСЃС‚Рё
-            Vector3 bladeNormal = blade.bladeRoot.up; // РёР»Рё .forward вЂ” Р·Р°РІРёСЃРёС‚ РѕС‚ РјРѕРґРµР»Рё
-            float angleEfficiency = CalculateBladeEfficiency(bladeNormal);
+            // Дополнительное снижение эффективности если руки слишком близко
+            float handDistance = Vector3.Distance(constrainedLeftPos, constrainedRightPos);
+            float distanceEfficiency = Mathf.Clamp01((handDistance - minHandDistance) / (maxHandDistance - minHandDistance));
+            angleEff *= distanceEfficiency;
 
-            if (isPullingBack)
+            if (localVel.z < -0.1f) // Pulling back (effective stroke)
             {
-                float speed = Mathf.Clamp(-localVelocity.z, 0f, maxEffectiveSpeed);
-                Vector3 force = transform.forward * speed * forceMultiplier * angleEfficiency;
-                rb.AddForceAtPosition(force, currentPos, ForceMode.Force);
+                float speed = Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed);
+                Vector3 force = transform.forward * speed * forceMultiplier * angleEff;
+                rb.AddForceAtPosition(force, current, ForceMode.Force);
             }
-            else if (localVelocity.z > 0.1f)
+            else if (localVel.z > 0.1f) // Pushing forward (drag when submerged)
             {
-                // РЎРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ РїСЂРё РґРІРёР¶РµРЅРёРё РІРїРµСЂС‘Рґ РїРѕРґ РІРѕРґРѕР№
-                float drag = localVelocity.z * forceMultiplier * 0.3f * angleEfficiency;
-                Vector3 dragForce = -transform.forward * drag;
-                rb.AddForceAtPosition(dragForce, currentPos, ForceMode.Force);
+                float drag = localVel.z * forceMultiplier * 0.3f * angleEff;
+                rb.AddForceAtPosition(-transform.forward * drag, current, ForceMode.Force);
             }
         }
         else
         {
-            // Р’РѕР·РґСѓС€РЅРѕРµ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ (СЃР»Р°Р±РѕРµ)
+            // Air drag
             if (velocity.magnitude > 0.2f)
             {
                 Vector3 airDrag = -velocity * recoveryDrag;
                 airDrag.y = 0f;
-                rb.AddForceAtPosition(airDrag, currentPos, ForceMode.Force);
+                rb.AddForceAtPosition(airDrag, current, ForceMode.Force);
             }
         }
     }
 
-    float CalculateBladeEfficiency(Vector3 bladeNormal)
+    float CalculateBladeEfficiency(Vector3 normal)
     {
-        // Р­С„С„РµРєС‚РёРІРЅРѕСЃС‚СЊ = РЅР°СЃРєРѕР»СЊРєРѕ Р»РѕРїР°СЃС‚СЊ "СЃРјРѕС‚СЂРёС‚ РІРІРµСЂС…"
-        // Р•СЃР»Рё bladeNormal в‰€ (0,1,0) в†’ РїР»РѕСЃРєРѕСЃС‚СЊ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅР° в†’ max СЌС„С„РµРєС‚РёРІРЅРѕСЃС‚СЊ
-        // Р•СЃР»Рё bladeNormal в‰€ (0,0,1) в†’ СЂРµР±СЂРѕ в†’ min СЌС„С„РµРєС‚РёРІРЅРѕСЃС‚СЊ
-        float dot = Mathf.Abs(Vector3.Dot(bladeNormal, Vector3.up));
-        return Mathf.Lerp(minEfficiency, maxEfficiency, dot * dot); // РєРІР°РґСЂР°С‚ РґР»СЏ Р±РѕР»РµРµ СЂРµР·РєРѕРіРѕ РїРµСЂРµС…РѕРґР°
+        float dot = Mathf.Abs(Vector3.Dot(normal, Vector3.up));
+        return Mathf.Lerp(minEfficiency, maxEfficiency, dot * dot);
     }
 
-    // Gizmos
     void OnDrawGizmos()
     {
-        DrawBladeGizmo(leftBlade);
-        DrawBladeGizmo(rightBlade);
+        if (leftController != null && rightController != null)
+        {
+            float distance = Vector3.Distance(
+                Application.isPlaying ? constrainedLeftPos : leftController.position,
+                Application.isPlaying ? constrainedRightPos : rightController.position
+            );
+
+            // Рисуем линию между позициями рук
+            Gizmos.color = isPaddleActive ? Color.green : Color.red;
+            if (Application.isPlaying)
+            {
+                Gizmos.DrawLine(constrainedLeftPos, constrainedRightPos);
+
+                // Линии от контроллеров к ограниченным позициям
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(leftController.position, constrainedLeftPos);
+                Gizmos.DrawLine(rightController.position, constrainedRightPos);
+            }
+            else
+            {
+                Gizmos.DrawLine(leftController.position, rightController.position);
+            }
+
+            // Рисуем сферы минимального и максимального расстояния
+            Vector3 leftPos = Application.isPlaying ? constrainedLeftPos : leftController.position;
+
+            Gizmos.color = new Color(1f, 1f, 0f, 0.3f);
+            Gizmos.DrawWireSphere(leftPos, minHandDistance);
+
+            Gizmos.color = new Color(1f, 0.5f, 0f, 0.3f);
+            Gizmos.DrawWireSphere(leftPos, maxHandDistance);
+
+            // Рисуем точки проверки на стержне
+            if (Application.isPlaying)
+            {
+                Gizmos.color = new Color(0f, 1f, 1f, 0.5f);
+                for (int i = 0; i < shaftCheckPoints; i++)
+                {
+                    float t = i / (float)(shaftCheckPoints - 1);
+                    Vector3 checkPoint = Vector3.Lerp(constrainedLeftPos, constrainedRightPos, t);
+                    Gizmos.DrawWireSphere(checkPoint, shaftCollisionRadius);
+                }
+            }
+        }
+
+        if (OceanRenderer.Instance == null) return;
+        DrawBlade(leftBlade, _leftHeightHelper);
+        DrawBlade(rightBlade, _rightHeightHelper);
     }
 
-    void DrawBladeGizmo(Blade blade)
+    void DrawBlade(Blade blade, SampleHeightHelper helper)
     {
-        if (blade.bladeTip == null) return;
-        bool inWater = blade.bladeTip.position.y < waterLevel + bladeDepthThreshold;
+        if (blade?.bladeTip == null) return;
+
+        Vector3 pos = blade.bladeTip.position;
+        float waterHeight = OceanRenderer.Instance.SeaLevel;
+        bool inWater = false;
+
+        if (Application.isPlaying && helper != null)
+        {
+            helper.Init(pos, minSpatialLength);
+            if (helper.Sample(out waterHeight, out _, out _))
+            {
+                inWater = pos.y < waterHeight + bladeDepthThreshold;
+                Gizmos.color = new Color(0f, 0.5f, 1f, 0.5f);
+                Gizmos.DrawLine(pos, new Vector3(pos.x, waterHeight, pos.z));
+            }
+        }
+        else
+        {
+            inWater = pos.y < waterHeight + bladeDepthThreshold;
+        }
+
         Gizmos.color = inWater ? Color.cyan : Color.yellow;
-        Gizmos.DrawSphere(blade.bladeTip.position, 0.04f);
+        Gizmos.DrawSphere(pos, 0.04f);
+
+        // Рисуем радиус проверки столкновений
+        Gizmos.color = new Color(1f, 0f, 0f, 0.2f);
+        Gizmos.DrawWireSphere(pos, bladeCollisionRadius);
+    }
+
+    void OnValidate()
+    {
+        if (minHandDistance >= maxHandDistance)
+        {
+            Debug.LogWarning("minHandDistance должно быть меньше maxHandDistance!");
+            minHandDistance = maxHandDistance - 0.1f;
+        }
     }
 }
