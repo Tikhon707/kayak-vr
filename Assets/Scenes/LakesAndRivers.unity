@@ -1119,11 +1119,11 @@ PrefabInstance:
       objectReference: {fileID: 1489483934}
     - target: {fileID: 8135443800744371175, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: maxHandDistance
-      value: 0.69
+      value: 0.77
       objectReference: {fileID: 0}
     - target: {fileID: 8135443800744371175, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: minHandDistance
-      value: 0.19
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8135443800744371175, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: rightController
@@ -1145,6 +1145,10 @@ PrefabInstance:
       propertyPath: rightBlade.bladeRoot
       value: 
       objectReference: {fileID: 109748574}
+    - target: {fileID: 8135443800744371175, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      propertyPath: blockingLayers.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
