@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animated Trees Package/Demo Scene Contents/surface.mat.meta
+guid: a271d12d58c9cf1488a61b3ac1b48543
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+========
+guid: 7770f9500cc5ff545bd49a23659cd66f
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+>>>>>>>> 79e2f19fd9998e8550f78961eeb630212aca74fa:Assets/Scripts/WaterDeform.meta
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
