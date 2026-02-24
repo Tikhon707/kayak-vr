@@ -19,20 +19,11 @@ public class MenuManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    private void Start()
-    {
-        ShowMainMenu();
-    }
-
-    // ─────────────────────────────────────────────
-    // Состояния
-    // ─────────────────────────────────────────────
+    private void Start() => ShowMainMenu();
 
     public void ShowMainMenu()
     {
@@ -44,7 +35,6 @@ public class MenuManager : MonoBehaviour
     {
         HideAllPanels();
         if (dashboard != null) dashboard.StopTimer();
-
         victoryPanel.SetActive(true);
 
         if (victoryTimeText != null)
@@ -61,10 +51,6 @@ public class MenuManager : MonoBehaviour
         gameOverPanel.SetActive(true);
     }
 
-    // ─────────────────────────────────────────────
-    // Кнопки
-    // ─────────────────────────────────────────────
-
     public void OnStartGameButton()
     {
         HideAllPanels();
@@ -77,14 +63,7 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void OnQuitButton()
-    {
-        Application.Quit();
-    }
-
-    // ─────────────────────────────────────────────
-    // Helpers
-    // ─────────────────────────────────────────────
+    public void OnQuitButton() => Application.Quit();
 
     private void HideAllPanels()
     {
