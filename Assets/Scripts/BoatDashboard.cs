@@ -1,100 +1,129 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using TMPro;
 
 public class BoatDashboard : MonoBehaviour
 {
-    [Header("Настройки Гонки")]
-    [Tooltip("Время на прохождение трассы в секундах")]
-    [SerializeField] private float timeLimitInSeconds = 120f;
+    [Header("РќР°СЃС‚СЂРѕР№РєРё Р“РѕРЅРєРё")]
+    [Tooltip("РќР°С‡Р°Р»СЊРЅРѕРµ РІСЂРµРјСЏ РІ СЃРµРєСѓРЅРґР°С…")]
+    [SerializeField] private float timeLimitInSeconds = 30f;
 
+    [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI checkpointText;
     [SerializeField] private TextMeshProUGUI speedometerText;
+
+    [Header("Р¤РёР·РёРєР°")]
     [SerializeField] private Rigidbody kayakRB;
 
     [Header("Settings")]
     [SerializeField] private float speedUpdateInterval = 1.0f;
 
-    private float currentSpeedTimer;
+    // РџСЂРёРІР°С‚РЅС‹Рµ РїРѕР»СЏ
     private float _currentTime;
     private bool _isTimerRunning = false;
+    private float _currentSpeedTimer;
 
-    private void UpdateSpeedMeter()
+    // РџСѓР±Р»РёС‡РЅРѕРµ СЃРІРѕР№СЃС‚РІРѕ вЂ” С‚РµРєСѓС‰РµРµ РѕСЃС‚Р°РІС€РµРµСЃСЏ РІСЂРµРјСЏ (РґР»СЏ ShowVictory)
+    public float CurrentTime => _currentTime;
+
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+    // Unity Events
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+
+    private void Start()
     {
+        _currentTime = timeLimitInSeconds;
+        UpdateTimerUI(_currentTime);
+        UpdateCheckpointsUI(0, 0);
+    }
 
-        if (kayakRB == null || speedometerText == null) return;
-        currentSpeedTimer += Time.deltaTime;
+    private void Update()
+    {
+        UpdateSpeedMeter();
 
-        if (currentSpeedTimer >= speedUpdateInterval)
+        if (!_isTimerRunning) return;
+
+        _currentTime -= Time.deltaTime;
+
+        if (_currentTime <= 0)
         {
-            currentSpeedTimer = 0f;
-            
-            float sqrSpeed = kayakRB.linearVelocity.sqrMagnitude;
-
-            if (sqrSpeed < 0.1f)
-            {
-                speedometerText.text = "0 km/h";
-                return;
-            }
-            //перевод м/с в км/ч 
-            float realSpeed = Mathf.Sqrt(sqrSpeed) * 3.6f;
-            speedometerText.text = $"{realSpeed:F0} km/h";
+            _currentTime = 0;
+            _isTimerRunning = false;
+            UpdateTimerUI(_currentTime);
+            MenuManager.Instance.ShowGameOver();
+            return;
         }
-        
+
+        UpdateTimerUI(_currentTime);
     }
 
-    private void UpdateTimer(float time)
-    {
-        //Форматирование в 00:00:000
-        System.TimeSpan t = System.TimeSpan.FromSeconds(time);
-        timerText.text = string.Format("{0:D2}:{1:D2}:{2:D3}", t.Minutes, t.Seconds, t.Milliseconds);
-    }
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+    // РџСѓР±Р»РёС‡РЅС‹Рµ РјРµС‚РѕРґС‹ (РґР»СЏ MenuManager Рё CheckpointManager)
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
-    private void UpdateCheckpoints(int current, int total)
-    {
-        checkpointText.text = $"{current} / {total}";
-    }
-
-    // 2. Публичный метод для запуска таймера (вызывается из MenuManager)
+    /// <summary>
+    /// Р—Р°РїСѓСЃС‚РёС‚СЊ С‚Р°Р№РјРµСЂ (СЃР±СЂР°СЃС‹РІР°РµС‚ РЅР° РЅР°С‡Р°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ)
+    /// </summary>
     public void StartTimer()
     {
-        _currentTime = timeLimitInSeconds; // Сброс времени на начало
+        _currentTime = timeLimitInSeconds;
         _isTimerRunning = true;
+        UpdateTimerUI(_currentTime);
     }
 
-    // Метод для остановки (например при победе)
+    /// <summary>
+    /// РћСЃС‚Р°РЅРѕРІРёС‚СЊ С‚Р°Р№РјРµСЂ
+    /// </summary>
     public void StopTimer()
     {
         _isTimerRunning = false;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    /// <summary>
+    /// Р”РѕР±Р°РІРёС‚СЊ СЃРµРєСѓРЅРґС‹ Рє С‚Р°Р№РјРµСЂСѓ (РїСЂРё РїСЂРѕС…РѕР¶РґРµРЅРёРё Р°СЂРєРё)
+    /// </summary>
+    public void AddTime(float seconds)
     {
-        _currentTime = timeLimitInSeconds;
-        UpdateTimer(_currentTime);
-        UpdateCheckpoints(0, 10);
+        _currentTime += seconds;
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// РћР±РЅРѕРІРёС‚СЊ UI С‡РµРєРїРѕРёРЅС‚РѕРІ
+    /// </summary>
+    public void UpdateCheckpointsUI(int current, int total)
     {
-        // Спидометр работает всегда (для атмосферы)
-        UpdateSpeedMeter();
+        if (checkpointText != null)
+            checkpointText.text = $"{current} / {total}";
+    }
 
-        // 3. Таймер тикает ТОЛЬКО если флаг true
-        if (_isTimerRunning)
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+    // РџСЂРёРІР°С‚РЅС‹Рµ РјРµС‚РѕРґС‹
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+
+    private void UpdateTimerUI(float time)
+    {
+        if (timerText == null) return;
+        System.TimeSpan t = System.TimeSpan.FromSeconds(time);
+        timerText.text = string.Format("{0:D2}:{1:D2}:{2:D3}", t.Minutes, t.Seconds, t.Milliseconds);
+    }
+
+    private void UpdateSpeedMeter()
+    {
+        if (kayakRB == null || speedometerText == null) return;
+
+        _currentSpeedTimer += Time.deltaTime;
+        if (_currentSpeedTimer < speedUpdateInterval) return;
+
+        _currentSpeedTimer = 0f;
+
+        float sqrSpeed = kayakRB.linearVelocity.sqrMagnitude;
+        if (sqrSpeed < 0.1f)
         {
-            _currentTime -= Time.deltaTime;
-
-            if (_currentTime <= 0)
-            {
-                _currentTime = 0;
-                _isTimerRunning = false; // Останавливаем счетчик
-                MenuManager.Instance.ShowGameOver(); // Зовем Game Over напрямую
-            }
-
-            UpdateTimer(_currentTime);
+            speedometerText.text = "0 km/h";
+            return;
         }
+
+        float realSpeed = Mathf.Sqrt(sqrSpeed) * 3.6f;
+        speedometerText.text = $"{realSpeed:F0} km/h";
     }
 }

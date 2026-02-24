@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -6,22 +6,23 @@ public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance;
 
-    [Header("Ссылки")]
-    // 1. Добавляем поле для ссылки на дашборд
+    [Header("РЎСЃС‹Р»РєРё")]
     [SerializeField] private BoatDashboard dashboard;
 
-    [Header("Панели")]
+    [Header("РџР°РЅРµР»Рё")]
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject victoryPanel;
     [SerializeField] private GameObject gameOverPanel;
 
-    [Header("Текстовые поля итогов")]
+    [Header("РўРµРєСЃС‚ РёС‚РѕРіРѕРІ")]
     [SerializeField] private TextMeshProUGUI victoryTimeText;
-
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
     }
 
     private void Start()
@@ -29,27 +30,28 @@ public class MenuManager : MonoBehaviour
         ShowMainMenu();
     }
 
-    // --- УПРАВЛЕНИЕ СОСТОЯНИЯМИ ---
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+    // РЎРѕСЃС‚РѕСЏРЅРёСЏ
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
     public void ShowMainMenu()
     {
         HideAllPanels();
         mainMenuPanel.SetActive(true);
-        // Time.timeScale = 0f; // Если хочешь, чтобы вода двигалась в меню - оставь закомментированным
     }
 
     public void ShowVictory(float finalTime)
     {
         HideAllPanels();
-
-        // Останавливаем таймер на лодке, чтобы он не ушел в минус
         if (dashboard != null) dashboard.StopTimer();
 
         victoryPanel.SetActive(true);
-        // Time.timeScale = 0f; // Пауза физики (по желанию)
 
-        System.TimeSpan t = System.TimeSpan.FromSeconds(finalTime);
-        victoryTimeText.text = string.Format("TIME: {0:D2}:{1:D2}", t.Minutes, t.Seconds);
+        if (victoryTimeText != null)
+        {
+            System.TimeSpan t = System.TimeSpan.FromSeconds(finalTime);
+            victoryTimeText.text = string.Format("TIME: {0:D2}:{1:D2}", t.Minutes, t.Seconds);
+        }
     }
 
     public void ShowGameOver()
@@ -57,20 +59,16 @@ public class MenuManager : MonoBehaviour
         HideAllPanels();
         if (dashboard != null) dashboard.StopTimer();
         gameOverPanel.SetActive(true);
-        // Time.timeScale = 0f;
     }
 
-    // --- КНОПКИ ---
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+    // РљРЅРѕРїРєРё
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+
     public void OnStartGameButton()
     {
         HideAllPanels();
-        // Time.timeScale = 1f;
-
-        // 2. Запускаем таймер на лодке
-        if (dashboard != null)
-        {
-            dashboard.StartTimer();
-        }
+        if (dashboard != null) dashboard.StartTimer();
     }
 
     public void OnRestartButton()
@@ -84,14 +82,14 @@ public class MenuManager : MonoBehaviour
         Application.Quit();
     }
 
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+    // Helpers
+    // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+
     private void HideAllPanels()
     {
         mainMenuPanel.SetActive(false);
         victoryPanel.SetActive(false);
         gameOverPanel.SetActive(false);
-    }
-
-    private void Update()
-    {
     }
 }
