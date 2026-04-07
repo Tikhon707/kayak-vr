@@ -32,7 +32,7 @@ public class BoatDashboard : MonoBehaviour
 
     private void Start()
     {
-        _currentTime = timeLimitInSeconds;
+        _currentTime = 0;
         UpdateTimerUI(_currentTime);
         UpdateCheckpointsUI(0, 0);
     }
@@ -43,7 +43,7 @@ public class BoatDashboard : MonoBehaviour
 
         if (!_isTimerRunning) return;
 
-        _currentTime -= Time.deltaTime;
+        _currentTime += Time.deltaTime;
 
         if (_currentTime <= 0)
         {
@@ -66,7 +66,7 @@ public class BoatDashboard : MonoBehaviour
     /// </summary>
     public void StartTimer()
     {
-        _currentTime = timeLimitInSeconds;
+        _currentTime = 0;
         _isTimerRunning = true;
         UpdateTimerUI(_currentTime);
     }
