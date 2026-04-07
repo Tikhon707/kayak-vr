@@ -13,6 +13,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject victoryPanel;
     [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private GameObject pausePanel;
 
     [Header("Текст итогов")]
     [SerializeField] private TextMeshProUGUI victoryTimeText;
@@ -47,7 +48,7 @@ public class MenuManager : MonoBehaviour
     public void ShowGameOver()
     {
         HideAllPanels();
-        if (dashboard != null) dashboard.StopTimer();
+        if (dashboard) dashboard.StopTimer();
         gameOverPanel.SetActive(true);
     }
 
@@ -62,6 +63,18 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+    
+    public void OnPauseButton()
+    {
+        pausePanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+    
+    public void OnResumeButton()
+    {
+        pausePanel.SetActive(false);
+        Time.timeScale = 1f;
+    }
 
     public void OnQuitButton() => Application.Quit();
 
@@ -70,5 +83,6 @@ public class MenuManager : MonoBehaviour
         mainMenuPanel.SetActive(false);
         victoryPanel.SetActive(false);
         gameOverPanel.SetActive(false);
+        pausePanel.SetActive(false);
     }
 }

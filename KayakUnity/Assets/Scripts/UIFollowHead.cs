@@ -2,43 +2,46 @@ using UnityEngine;
 
 public class UIFollowHead : MonoBehaviour
 {
-    [Header("Цель")]
+    [Header("Р¦РµР»СЊ")]
     [SerializeField] private Transform headCamera;
 
-    [Header("Параметры")]
-    [Tooltip("Как далеко меню от лица")]
+    [Header("РџР°СЂР°РјРµС‚СЂС‹")]
+    [Tooltip("РљР°Рє РґР°Р»РµРєРѕ РјРµРЅСЋ РѕС‚ Р»РёС†Р°")]
     [SerializeField] private float distance = 2.0f;
 
-    [Tooltip("Скорость плавности (чем меньше, тем медленнее)")]
+    [Tooltip("РЎРєРѕСЂРѕСЃС‚СЊ РїР»Р°РІРЅРѕСЃС‚Рё (С‡РµРј РјРµРЅСЊС€Рµ, С‚РµРј РјРµРґР»РµРЅРЅРµРµ)")]
     [SerializeField] private float smoothSpeed = 5.0f;
 
-    [Header("Смещение")]
-    [Tooltip("Сдвиг по вертикали относительно уровня глаз. Поставь 0.2 или 0.3, чтобы поднять над каяком.")]
+    [Header("РЎРјРµС‰РµРЅРёРµ")]
+    [Tooltip("РЎРґРІРёРі РїРѕ РІРµСЂС‚РёРєР°Р»Рё РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ СѓСЂРѕРІРЅСЏ РіР»Р°Р·. РџРѕСЃС‚Р°РІСЊ 0.2 РёР»Рё 0.3, С‡С‚РѕР±С‹ РїРѕРґРЅСЏС‚СЊ РЅР°Рґ РєР°СЏРєРѕРј.")]
     [SerializeField] private float heightOffset = 0.0f;
 
     void LateUpdate()
     {
         if (headCamera == null) return;
 
-        // ШАГ 1: Определяем, куда смотрит игрок, но ИГНОРИРУЕМ наклон вверх/вниз
+        // РЁРђР“ 1: РћРїСЂРµРґРµР»СЏРµРј, РєСѓРґР° СЃРјРѕС‚СЂРёС‚ РёРіСЂРѕРє, РЅРѕ РР“РќРћР РР РЈР•Рњ РЅР°РєР»РѕРЅ РІРІРµСЂС…/РІРЅРёР·
         Vector3 forwardDirection = headCamera.forward;
-        forwardDirection.y = 0; // <-- БЛОКИРОВКА ГОРИЗОНТА (Убиваем наклон)
-        forwardDirection.Normalize(); // Делаем вектор снова длиной в 1 метр
+        forwardDirection.y = 0; // <-- Р‘Р›РћРљРР РћР’РљРђ Р“РћР РР—РћРќРўРђ (РЈР±РёРІР°РµРј РЅР°РєР»РѕРЅ)
+        forwardDirection.Normalize(); // Р”РµР»Р°РµРј РІРµРєС‚РѕСЂ СЃРЅРѕРІР° РґР»РёРЅРѕР№ РІ 1 РјРµС‚СЂ
 
-        // ШАГ 2: Вычисляем позицию
-        // Берем позицию головы + Вектор горизонта * дистанцию
+        // РЁРђР“ 2: Р’С‹С‡РёСЃР»СЏРµРј РїРѕР·РёС†РёСЋ
+        // Р‘РµСЂРµРј РїРѕР·РёС†РёСЋ РіРѕР»РѕРІС‹ + Р’РµРєС‚РѕСЂ РіРѕСЂРёР·РѕРЅС‚Р° * РґРёСЃС‚Р°РЅС†РёСЋ
         Vector3 targetPosition = headCamera.position + (forwardDirection * distance);
 
-        // ШАГ 3: Применяем ручное смещение по высоте
-        // Меню будет всегда на уровне глаз (headCamera.position.y) + твой отступ
+        // РЁРђР“ 3: РџСЂРёРјРµРЅСЏРµРј СЂСѓС‡РЅРѕРµ СЃРјРµС‰РµРЅРёРµ РїРѕ РІС‹СЃРѕС‚Рµ
+        // РњРµРЅСЋ Р±СѓРґРµС‚ РІСЃРµРіРґР° РЅР° СѓСЂРѕРІРЅРµ РіР»Р°Р· (headCamera.position.y) + С‚РІРѕР№ РѕС‚СЃС‚СѓРї
         targetPosition.y = headCamera.position.y + heightOffset;
 
-        // ШАГ 4: Поворот
-        // Меню всегда смотрит на игрока, но не наклоняется (так как forwardDirection плоский)
+        // РЁРђР“ 4: РџРѕРІРѕСЂРѕС‚
+        // РњРµРЅСЋ РІСЃРµРіРґР° СЃРјРѕС‚СЂРёС‚ РЅР° РёРіСЂРѕРєР°, РЅРѕ РЅРµ РЅР°РєР»РѕРЅСЏРµС‚СЃСЏ (С‚Р°Рє РєР°Рє forwardDirection РїР»РѕСЃРєРёР№)
         Quaternion targetRotation = Quaternion.LookRotation(forwardDirection);
 
-        // ШАГ 5: Плавное движение
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smoothSpeed);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * smoothSpeed);
+        // РЁРђР“ 5: РџР»Р°РІРЅРѕРµ РґРІРёР¶РµРЅРёРµ СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј unscaledDeltaTime
+        // Time.unscaledDeltaTime СЂР°Р±РѕС‚Р°РµС‚ РґР°Р¶Рµ РєРѕРіРґР° Time.timeScale = 0
+        float deltaTime = Time.unscaledDeltaTime;
+        
+        transform.position = Vector3.Lerp(transform.position, targetPosition, deltaTime * smoothSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, deltaTime * smoothSpeed);
     }
 }
