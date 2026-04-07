@@ -1,5 +1,6 @@
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GhostManager : MonoBehaviour
 {
@@ -10,7 +11,15 @@ public class GhostManager : MonoBehaviour
     [SerializeField] private GhostPlayback playback;
 
     private GhostData _bestData;
-    private string SavePath => Path.Combine(Application.persistentDataPath, "ghost_best.json");
+    private string SavePath
+    {
+        get
+        {
+            string dir = Path.Combine(Application.dataPath, "GhostData");
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            return Path.Combine(dir, $"ghost_{SceneManager.GetActiveScene().name}.json");
+        }
+    }
 
     private void Awake()
     {
