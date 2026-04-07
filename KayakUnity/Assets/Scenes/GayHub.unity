@@ -1380,10 +1380,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 888816769}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e5dd00c42164ced8623cc28aa62151a, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ef70fa42c543144b8448286a5936b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChangeLevel
-  sceneName: LakesAndRivers
+  sceneName: GayMode
 --- !u!65 &888816772
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -311601,10 +311601,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2030976606}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e5dd00c42164ced8623cc28aa62151a, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ef70fa42c543144b8448286a5936b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChangeLevel
-  sceneName: LakesAndRivers
+  sceneName: GayMode
 --- !u!65 &2030976609
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -312057,10 +312057,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 919132148864456955}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e5dd00c42164ced8623cc28aa62151a, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ef70fa42c543144b8448286a5936b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChangeLevel
-  sceneName: LakesAndRivers
+  sceneName: GayMode
 --- !u!1001 &6340203185379769370
 PrefabInstance:
   m_ObjectHideFlags: 0
