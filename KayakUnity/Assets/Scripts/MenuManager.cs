@@ -55,10 +55,12 @@ public class MenuManager : MonoBehaviour
     {
         HideAllPanels();
         if (dashboard != null) dashboard.StartTimer();
+        if (GhostManager.Instance != null) GhostManager.Instance.StartRace();
     }
 
     public void OnRestartButton()
     {
+        if (GhostManager.Instance != null) GhostManager.Instance.ResetRace();
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
