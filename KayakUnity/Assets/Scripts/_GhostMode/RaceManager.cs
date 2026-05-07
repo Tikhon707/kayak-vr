@@ -1,29 +1,75 @@
 using UnityEngine;
 using System.IO;
+using System.Collections;
+using TMPro;
 
-public class RacistManager : MonoBehaviour
+public class RaceManager : MonoBehaviour
 {
     [Header("Components")]
     public GhostRecorder recorder;
     public GhostPlayer player;
+    public Rigidbody playerKayak;
+
+    [Header("UI Countdown")]
+    public GameObject countdownMenu;
+    public TextMeshProUGUI countdownText;
+
+    public enum RaceState { Waiting, Countdown, Racing, Finished  };
+    public RaceState currentState = RaceState.Waiting;
 
     private GhostRun bestRun;
     private float bestTime = float.MaxValue;
-
-    private bool isRacing = false;
     private float currentRaceTime = 0f;
     private string SavePath => Application.persistentDataPath + "/best_ghost.json";
 
     void Start()
     {
         LoadGhost();
+        StartCoroutine(CountdownRoutine());
     }
 
-    public void OnTriggerStartLine()
+    private IEnumerator CountdownRoutine()
     {
-        if (isRacing) return;
+        currentState = RaceState.Countdown;
 
-        isRacing = true;
+        if (playerKayak != null)
+            playerKayak.isKinematic = true;
+
+        if (countdownMenu != null)
+            countdownMenu.SetActive(true);
+
+        int count = 3;
+        while (count > 0)
+        {
+            if (countdownText != null)
+                countdownText.text = count.ToString();
+
+            //audioSource.PlayOneShot(beepClip);
+
+            yield return new WaitForSeconds(1f);
+            count--;
+        }
+
+        // 4. Сигнал к старту
+        if (countdownText != null)
+            countdownText.text = "GO!";
+
+        //audioSource.PlayOneShot(startClip);
+
+        yield return new WaitForSeconds(0.5f);
+
+        if (countdownMenu != null)
+            countdownMenu.SetActive(false);
+
+        if (playerKayak != null)
+            playerKayak.isKinematic = false;
+
+        StartRace();
+    }
+
+    private void StartRace()
+    {
+        currentState = RaceState.Racing;
         currentRaceTime = 0f;
 
         recorder.StartRecording();
@@ -36,9 +82,9 @@ public class RacistManager : MonoBehaviour
 
     public void OnTriggerFinishLine()
     {
-        if (!isRacing) return;
+        if (currentState != RaceState.Racing) return;
 
-        isRacing = false;
+        currentState = RaceState.Finished;
         recorder.StopRecording();
 
         // Check record
@@ -54,12 +100,17 @@ public class RacistManager : MonoBehaviour
         {
             Debug.Log($"Финиш! Время: {currentRaceTime:F2} сек. Рекорд не побит ({bestTime:F2}).");
         }
+
+        if (CheckpointManager.Instance != null)
+        {
+            CheckpointManager.Instance.OnFinish();
+        }
     }
 
     void Update()
     {
         // Count race time
-        if (isRacing)
+        if (currentState == RaceState.Racing)
         {
             currentRaceTime += Time.deltaTime;
         }
@@ -86,7 +137,6 @@ public class RacistManager : MonoBehaviour
             // Convert JSON back to GhostFile
             bestRun = JsonUtility.FromJson<GhostRun>(json);
             bestTime = bestRun.raceTime;
-
             Debug.Log($"Призрак успешно загружен. Прошлый рекорд: {bestTime:F2} сек.");
         }
     }
