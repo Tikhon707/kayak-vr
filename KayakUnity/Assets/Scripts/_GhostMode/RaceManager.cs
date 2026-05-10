@@ -74,6 +74,11 @@ public class RaceManager : MonoBehaviour
 
         recorder.StartRecording();
 
+        if (MenuManager.Instance != null)
+        {
+            MenuManager.Instance.OnStartGameButton();
+        }
+
         if (bestRun != null && bestRun.frames.Count > 0)
         {
             player.PlayRun(bestRun);
