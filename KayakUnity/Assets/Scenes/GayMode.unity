@@ -1591,6 +1591,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
+--- !u!1 &879674423 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5066590779802998754, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
+  m_PrefabInstance: {fileID: 879674422}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &940181618
 GameObject:
   m_ObjectHideFlags: 0
@@ -1684,8 +1689,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RacistManager
   recorder: {fileID: 940181622}
   player: {fileID: 940181621}
-  playerKayak: {fileID: 0}
-  countdownMenu: {fileID: 0}
+  playerKayak: {fileID: 1095289339}
+  countdownMenu: {fileID: 879674423}
   countdownText: {fileID: 0}
   currentState: 0
 --- !u!4 &963094352 stripped
