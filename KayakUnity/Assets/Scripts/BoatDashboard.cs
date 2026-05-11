@@ -3,20 +3,19 @@ using TMPro;
 
 public class BoatDashboard : MonoBehaviour
 {
-    [Header("Настройки Гонки")]
-    [Tooltip("Начальное время в секундах")]
-    [SerializeField] private float timeLimitInSeconds = 30f;
+    public static BoatDashboard Instance;
 
-    [Header("UI")]
-    [SerializeField] private TextMeshProUGUI timerText;
+    [Header("Настройки Гонки")] [Tooltip("Начальное время в секундах")] [SerializeField]
+    private float timeLimitInSeconds = 30f;
+
+    [Header("UI")] [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private TextMeshProUGUI ghostDifferTimer;
     [SerializeField] private TextMeshProUGUI checkpointText;
     [SerializeField] private TextMeshProUGUI speedometerText;
 
-    [Header("Физика")]
-    [SerializeField] private Rigidbody kayakRB;
+    [Header("Физика")] [SerializeField] private Rigidbody kayakRB;
 
-    [Header("Settings")]
-    [SerializeField] private float speedUpdateInterval = 1.0f;
+    [Header("Settings")] [SerializeField] private float speedUpdateInterval = 1.0f;
 
     // Приватные поля
     private float _currentTime;
@@ -29,6 +28,12 @@ public class BoatDashboard : MonoBehaviour
     // ─────────────────────────────────────────────
     // Unity Events
     // ─────────────────────────────────────────────
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     private void Start()
     {
@@ -102,14 +107,40 @@ public class BoatDashboard : MonoBehaviour
 
     private void UpdateTimerUI(float time)
     {
-        if (timerText == null) return;
+        if (!timerText) return;
         System.TimeSpan t = System.TimeSpan.FromSeconds(time);
         timerText.text = string.Format("{0:D2}:{1:D2}:{2:D3}", t.Minutes, t.Seconds, t.Milliseconds);
     }
 
+    public void UpdateTimer2UI(float time)
+    {
+        if (!ghostDifferTimer) return;
+    
+        var resultTime = _currentTime - time;
+    
+        // Берем абсолютное значение для форматирования
+        float absoluteTime = Mathf.Abs(resultTime);
+        System.TimeSpan t = System.TimeSpan.FromSeconds(absoluteTime);
+    
+        // Форматируем время
+        string timeString = $"{t.Minutes:D2}:{t.Seconds:D2}:{t.Milliseconds:D3}";
+    
+        // Добавляем минус только если результат отрицательный
+        if (resultTime < 0)
+            timeString = "-" + timeString;
+    
+        ghostDifferTimer.text = timeString;
+    
+        // Цвет: красный если игрок отстает, зеленый если опережает
+        if (resultTime > 0)
+            ghostDifferTimer.color = Color.red;
+        else 
+            ghostDifferTimer.color = Color.green;
+    }
+
     private void UpdateSpeedMeter()
     {
-        if (kayakRB == null || speedometerText == null) return;
+        if (!kayakRB || !speedometerText) return;
 
         _currentSpeedTimer += Time.deltaTime;
         if (_currentSpeedTimer < speedUpdateInterval) return;

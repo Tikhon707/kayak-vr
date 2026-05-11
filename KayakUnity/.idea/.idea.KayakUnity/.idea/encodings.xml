@@ -3,5 +3,8 @@
   <component name="Encoding" addBOMForNewFiles="with BOM under Windows, with no BOM otherwise">
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Checkpoint.cs" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/CheckpointManager.cs" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/_GhostMode/GhostPlayer.cs" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/_GhostMode/GhostRecorder.cs" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/_GhostMode/RaceManager.cs" charset="windows-1251" />
   </component>
 </project>

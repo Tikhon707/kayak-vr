@@ -26,7 +26,7 @@ public class CheckpointManager : MonoBehaviour
     public void OnCheckpointPassed(float bonusTime)
     {
         _passedCount++;
-        dashboard.AddTime(bonusTime);
+        //dashboard.AddTime(bonusTime);
         dashboard.UpdateCheckpointsUI(_passedCount, totalCheckpoints);
 
         if (audioSource && checkpointClip) audioSource.PlayOneShot(checkpointClip);
