@@ -14,7 +14,7 @@ public class GhostPlayer : MonoBehaviour
     private int currentFrameIndex = 0;
     private int lastClosestIndex = 0;
     private GhostTracker _ghostTracker;
-    
+
     public void PlayRun(GhostRun runData)
     {
         if (runData == null || runData.frames.Count == 0) return;
@@ -75,7 +75,10 @@ public class GhostPlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        var x = _ghostTracker.FindClosest(kayakTransform.position);
-        BoatDashboard.Instance.UpdateTimer2UI(x.closestTime);
+        if (_ghostTracker != null && kayakTransform)
+        {
+            var x = _ghostTracker.FindClosest(kayakTransform.position);
+            BoatDashboard.Instance.UpdateTimer2UI(x.closestTime);
+        }
     }
 }
