@@ -99,11 +99,11 @@ public class RaceManager : MonoBehaviour
             bestRun = recorder.CurrentRun; // rewrite record
             bestRun.raceTime = currentRaceTime; // note our time into struct
             SaveGhost(); // Save new record
-            Debug.Log($"Новый рекорд! Время: {bestTime:F2} сек.");
+            Debug.Log($"New record! Time: {bestTime:F2} sec.");
         }
         else
         {
-            Debug.Log($"Финиш! Время: {currentRaceTime:F2} сек. Рекорд не побит ({bestTime:F2}).");
+            Debug.Log($"Finish! Time: {currentRaceTime:F2} sec. Record not broken ({bestTime:F2}).");
         }
 
         if (CheckpointManager.Instance != null)
@@ -129,7 +129,7 @@ public class RaceManager : MonoBehaviour
         string json = JsonUtility.ToJson(bestRun);
         // save line into JSON
         File.WriteAllText(SavePath, json);
-        Debug.Log("Призрак сохранен по пути: " + SavePath);
+        Debug.Log("Ghost saved: " + SavePath);
     }
 
     private void LoadGhost()
@@ -142,7 +142,7 @@ public class RaceManager : MonoBehaviour
             // Convert JSON back to GhostFile
             bestRun = JsonUtility.FromJson<GhostRun>(json);
             bestTime = bestRun.raceTime;
-            Debug.Log($"Призрак успешно загружен. Прошлый рекорд: {bestTime:F2} сек.");
+            Debug.Log($"Ghost loaded. Last best: {bestTime:F2} sec.");
         }
     }
 }
