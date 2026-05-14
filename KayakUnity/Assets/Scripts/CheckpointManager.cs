@@ -1,20 +1,20 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CheckpointManager : MonoBehaviour
 {
     public static CheckpointManager Instance;
 
-    [Header("Ññûëêè")]
+    [Header("������")]
     [SerializeField] private BoatDashboard dashboard;
 
-    [Header("Çâóêè")]
+    [Header("�����")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip checkpointClip;
     [SerializeField] private AudioClip finishClip;
 
-    [Header("Íàñòðîéêè")]
-    [SerializeField] private int totalCheckpoints;
-    
+    [Header("���������")]
+    [SerializeField] private int totalCheckpoints = 5;
 
     private int _passedCount = 0;
 
@@ -66,6 +66,16 @@ public class CheckpointManager : MonoBehaviour
 
     public void OnFinish()
     {
+        if (PlayerProfile.HasName)
+        {
+            string scene = SceneManager.GetActiveScene().name;
+            LeaderboardService.AddRecord(scene, PlayerProfile.CurrentName, dashboard.CurrentTime);
+        }
+        else
+        {
+            Debug.LogWarning("[Leaderboard] Skipped submit: no player selected");
+        }
+
         if (audioSource && finishClip) audioSource.PlayOneShot(finishClip);
         MenuManager.Instance.ShowVictory(dashboard.CurrentTime);
     }
