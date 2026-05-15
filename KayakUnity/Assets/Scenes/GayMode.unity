@@ -485,13 +485,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c783e017c92ecbf45b4895c61b56faa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhysicsRope
-  kayakAttachPoint: {fileID: 2125161351}
-  raftAttachPoint: {fileID: 566630132}
-  maxRopeLength: 4
+  kayakAttachPoint: {fileID: 0}
+  raftAttachPoint: {fileID: 0}
+  maxRopeLength: 5
   ropeStrength: 10
   dampingRatio: 0.7
   ropeWidth: 0.05
-  ropeColor: {r: 0.55, g: 0.35, b: 0.15, a: 1}
+  ropeColor:
+    r: 0.55
+    g: 0.35
+    b: 0.15
+    a: 1
   sagAmount: 0.3
   sagSegments: 8
 --- !u!4 &240462298
@@ -600,6 +604,11 @@ MonoBehaviour:
   arrow: {fileID: 0}
   ringRenderer: {fileID: 0}
   arrowRenderer: {fileID: 0}
+--- !u!1 &507113529 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4835613551856175407, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
+  m_PrefabInstance: {fileID: 879674422}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &513518501 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: cdff5502e67a73e418dd4ca9682a8fd8, type: 3}
@@ -704,6 +713,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RacistTrigger
   raceManager: {fileID: 940181623}
+--- !u!1 &516586450 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7938607749001943078, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
+  m_PrefabInstance: {fileID: 824824630}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &566630131
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,6 +956,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 236947858}
     m_Modifications:
+    - target: {fileID: 37862568515713242, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1484632255}
+    - target: {fileID: 37862568515713242, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnPauseButton
+      objectReference: {fileID: 0}
     - target: {fileID: 2762543369299462945, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
       propertyPath: kayakRB
       value: 
@@ -961,6 +983,10 @@ PrefabInstance:
     - target: {fileID: 2762543369299462945, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
       propertyPath: timeLimitInSeconds
       value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099255457659493987, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3180579423955677002, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
       propertyPath: m_Layer
@@ -1085,7 +1111,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7938607749001943078, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1519687324}
   m_SourcePrefab: {fileID: 100100000, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
 --- !u!1 &831960166
 GameObject:
@@ -1508,6 +1537,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 963094356}
+    - target: {fileID: 633804069783194265, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2090458043812311643, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1604,6 +1637,10 @@ PrefabInstance:
       propertyPath: heightOffset
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4835613551856175407, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5066590779802998754, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1616,6 +1653,10 @@ PrefabInstance:
       propertyPath: dashboard
       value: 
       objectReference: {fileID: 1519687319}
+    - target: {fileID: 5913745633094671243, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
+      propertyPath: pausePanel
+      value: 
+      objectReference: {fileID: 507113529}
     - target: {fileID: 7234870623720324640, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
       propertyPath: m_Name
       value: VR_HUD_Canvas
@@ -2393,6 +2434,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3562490301423696488, guid: e00d88c8cb2aff5418c6397016e1811b, type: 3}
   m_PrefabInstance: {fileID: 130531391}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1484632255 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5913745633094671243, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
+  m_PrefabInstance: {fileID: 879674422}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f24fc6ac54d3c2848ad4b8584bc3ec64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuManager
 --- !u!4 &1489483934 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3865852558874995585, guid: 53616a54c89463649a046c603e48bc94, type: 3}
@@ -2403,7 +2455,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2762543369299462945, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
   m_PrefabInstance: {fileID: 824824630}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 516586450}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ff34da85dd016a4180bc241dedd7b84, type: 3}
@@ -2414,6 +2466,25 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4325368550331478015, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
   m_PrefabInstance: {fileID: 824824630}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1519687324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 516586450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster
+  m_IgnoreReversedGraphics: 0
+  m_CheckFor2DOcclusion: 0
+  m_CheckFor3DOcclusion: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1
 --- !u!1 &1569411086
 GameObject:
   m_ObjectHideFlags: 0

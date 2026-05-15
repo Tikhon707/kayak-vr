@@ -68,7 +68,7 @@ public class MenuManager : MonoBehaviour
     public void OnStartGameButton()
     {
         //HideAllPanels();
-        if (dashboard != null) dashboard.StartTimer();
+        if (dashboard) dashboard.StartTimer();
     }
 
     public void OnRestartButton()
