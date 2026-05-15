@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using TMPro;
 
 public class BoatDashboard : MonoBehaviour
 {
+    [Header("Race settings")]
+    [Tooltip("Initial time seconds")]
+    [SerializeField] private float timeLimitInSeconds = 30f;
     public static BoatDashboard Instance;
 
     [Header("Настройки Гонки")] [Tooltip("Начальное время в секундах")] [SerializeField]
@@ -13,16 +16,15 @@ public class BoatDashboard : MonoBehaviour
     [SerializeField] private TextMeshProUGUI checkpointText;
     [SerializeField] private TextMeshProUGUI speedometerText;
 
-    [Header("Физика")] [SerializeField] private Rigidbody kayakRB;
+    [Header("Physics")]
+    [SerializeField] private Rigidbody kayakRB;
 
     [Header("Settings")] [SerializeField] private float speedUpdateInterval = 1.0f;
 
-    // Приватные поля
     private float _currentTime;
     private bool _isTimerRunning = false;
     private float _currentSpeedTimer;
 
-    // Публичное свойство — текущее оставшееся время (для ShowVictory)
     public float CurrentTime => _currentTime;
 
     // ─────────────────────────────────────────────
@@ -39,7 +41,7 @@ public class BoatDashboard : MonoBehaviour
     {
         _currentTime = 0;
         UpdateTimerUI(_currentTime);
-        UpdateCheckpointsUI(0, 0);
+        //UpdateCheckpointsUI(0, 0);
     }
 
     private void Update()
@@ -49,25 +51,15 @@ public class BoatDashboard : MonoBehaviour
         if (!_isTimerRunning) return;
 
         _currentTime += Time.deltaTime;
-
-        if (_currentTime <= 0)
-        {
-            _currentTime = 0;
-            _isTimerRunning = false;
-            UpdateTimerUI(_currentTime);
-            MenuManager.Instance.ShowGameOver();
-            return;
-        }
-
         UpdateTimerUI(_currentTime);
     }
 
     // ─────────────────────────────────────────────
-    // Публичные методы (для MenuManager и CheckpointManager)
+    // Public Methods (for MenuManager and CheckpointManager)
     // ─────────────────────────────────────────────
 
     /// <summary>
-    /// Запустить таймер (сбрасывает на начальное значение)
+    /// Start timer (resets to initial)
     /// </summary>
     public void StartTimer()
     {
@@ -77,7 +69,7 @@ public class BoatDashboard : MonoBehaviour
     }
 
     /// <summary>
-    /// Остановить таймер
+    /// Update timer
     /// </summary>
     public void StopTimer()
     {
@@ -85,7 +77,7 @@ public class BoatDashboard : MonoBehaviour
     }
 
     /// <summary>
-    /// Добавить секунды к таймеру (при прохождении арки)
+    /// Add time (after checkpoint)
     /// </summary>
     public void AddTime(float seconds)
     {
@@ -93,17 +85,13 @@ public class BoatDashboard : MonoBehaviour
     }
 
     /// <summary>
-    /// Обновить UI чекпоинтов
+    /// Update checkpoint UI
     /// </summary>
     public void UpdateCheckpointsUI(int current, int total)
     {
         if (checkpointText != null)
             checkpointText.text = $"{current} / {total}";
     }
-
-    // ─────────────────────────────────────────────
-    // Приватные методы
-    // ─────────────────────────────────────────────
 
     private void UpdateTimerUI(float time)
     {

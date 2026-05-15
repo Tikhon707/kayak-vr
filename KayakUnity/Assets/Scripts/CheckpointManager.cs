@@ -4,16 +4,17 @@ public class CheckpointManager : MonoBehaviour
 {
     public static CheckpointManager Instance;
 
-    [Header("Ссылки")]
+    [Header("Г‘Г±Г»Г«ГЄГЁ")]
     [SerializeField] private BoatDashboard dashboard;
 
-    [Header("Звуки")]
+    [Header("Г‡ГўГіГЄГЁ")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip checkpointClip;
     [SerializeField] private AudioClip finishClip;
 
-    [Header("Настройки")]
-    [SerializeField] private int totalCheckpoints = 5;
+    [Header("ГЌГ Г±ГІГ°Г®Г©ГЄГЁ")]
+    [SerializeField] private int totalCheckpoints;
+    
 
     private int _passedCount = 0;
 
@@ -21,9 +22,39 @@ public class CheckpointManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        totalCheckpoints = transform.childCount;
     }
 
-    public void OnCheckpointPassed(float bonusTime)
+    void Start()
+    {
+        if (dashboard != null)
+        {
+            dashboard.UpdateCheckpointsUI(0, totalCheckpoints);
+        }
+
+        for (int i = 0; i < totalCheckpoints - 1; i++)
+        {
+            Checkpoint current = transform.GetChild(i).GetComponent<Checkpoint>();
+            Checkpoint next = transform.GetChild(i + 1).GetComponent<Checkpoint>();
+
+            if (current != null && next != null)
+            {
+                current.PointTo(next.transform);
+            }
+        }
+
+        if (totalCheckpoints > 0)
+        {
+            Checkpoint last = transform.GetChild(totalCheckpoints - 1).GetComponent<Checkpoint>();
+            if (last != null)
+            {
+                last.HideArrow();
+            }
+        }
+    }
+
+    public void OnCheckpointPassed()
     {
         _passedCount++;
         //dashboard.AddTime(bonusTime);
