@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -17,6 +17,9 @@ public class MenuManager : MonoBehaviour
 
     [Header("Текст итогов")]
     [SerializeField] private TextMeshProUGUI victoryTimeText;
+
+    [Header("Лидерборд")]
+    [SerializeField] private LeaderboardUI leaderboardUI;
 
     private void Awake()
     {
@@ -42,6 +45,16 @@ public class MenuManager : MonoBehaviour
         {
             System.TimeSpan t = System.TimeSpan.FromSeconds(finalTime);
             victoryTimeText.text = string.Format("TIME: {0:D2}:{1:D2}", t.Minutes, t.Seconds);
+        }
+
+        Debug.Log($"[MenuManager] ShowVictory finalTime={finalTime}, leaderboardUI={(leaderboardUI == null ? "NULL" : leaderboardUI.name)}, currentName='{PlayerProfile.CurrentName}'");
+        if (leaderboardUI != null)
+        {
+            leaderboardUI.Show(SceneManager.GetActiveScene().name, PlayerProfile.CurrentName);
+        }
+        else
+        {
+            Debug.LogWarning("[MenuManager] leaderboardUI is not assigned in inspector");
         }
     }
 

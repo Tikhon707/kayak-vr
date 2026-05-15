@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/LakesAndRivers.unity
     guid: 9a18cc5d35536fd428eb6e90b3402589
   - enabled: 1
+    path: Assets/Scenes/LakesAndRivers_copy.unity
+    guid: 327ba5c0da579d1408aa3867d6bb36ba
+  - enabled: 1
     path: Assets/Scenes/GayMode.unity
     guid: e6b07e5e65c332e4085ac15d4d049806
   m_configObjects:
