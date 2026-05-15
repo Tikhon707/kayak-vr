@@ -8,9 +8,6 @@ public class BoatDashboard : MonoBehaviour
     [SerializeField] private float timeLimitInSeconds = 30f;
     public static BoatDashboard Instance;
 
-    [Header("Настройки Гонки")] [Tooltip("Начальное время в секундах")] [SerializeField]
-    private float timeLimitInSeconds = 30f;
-
     [Header("UI")] [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI ghostDifferTimer;
     [SerializeField] private TextMeshProUGUI checkpointText;
