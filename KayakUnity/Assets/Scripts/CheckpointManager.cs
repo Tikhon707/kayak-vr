@@ -4,15 +4,15 @@ public class CheckpointManager : MonoBehaviour
 {
     public static CheckpointManager Instance;
 
-    [Header("Ссылки")]
+    [Header("Г‘Г±Г»Г«ГЄГЁ")]
     [SerializeField] private BoatDashboard dashboard;
 
-    [Header("Звуки")]
+    [Header("Г‡ГўГіГЄГЁ")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip checkpointClip;
     [SerializeField] private AudioClip finishClip;
 
-    [Header("Настройки")]
+    [Header("ГЌГ Г±ГІГ°Г®Г©ГЄГЁ")]
     [SerializeField] private int totalCheckpoints;
     
 
@@ -57,6 +57,7 @@ public class CheckpointManager : MonoBehaviour
     public void OnCheckpointPassed()
     {
         _passedCount++;
+        //dashboard.AddTime(bonusTime);
         dashboard.UpdateCheckpointsUI(_passedCount, totalCheckpoints);
 
         if (audioSource && checkpointClip) audioSource.PlayOneShot(checkpointClip);

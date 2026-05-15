@@ -814,6 +814,17 @@ MonoBehaviour:
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
   m_CancelButton: Cancel
+--- !u!114 &669825440 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7476666559214565407, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
+  m_PrefabInstance: {fileID: 824824630}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &743668973
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -928,9 +939,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1095289339}
     - target: {fileID: 2762543369299462945, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
+      propertyPath: timerText2
+      value: 
+      objectReference: {fileID: 669825440}
+    - target: {fileID: 2762543369299462945, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
       propertyPath: totalGates
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 2762543369299462945, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
+      propertyPath: ghostDifferTimer
+      value: 
+      objectReference: {fileID: 669825440}
     - target: {fileID: 2762543369299462945, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
       propertyPath: timeLimitInSeconds
       value: 60
@@ -1677,6 +1696,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GhostPlayer
   ghostTransform: {fileID: 1701243570}
+  kayakTransform: {fileID: 236947858}
 --- !u!114 &940181622
 MonoBehaviour:
   m_ObjectHideFlags: 0
