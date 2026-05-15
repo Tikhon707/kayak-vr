@@ -482,20 +482,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 240462296}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c783e017c92ecbf45b4895c61b56faa3, type: 3}
+  m_Script: {fileID: 11500000, guid: 40fc05ec7ea9d204793b8b5fbce47d35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhysicsRope
-  kayakAttachPoint: {fileID: 0}
-  raftAttachPoint: {fileID: 0}
+  kayakAttachPoint: {fileID: 2125161351}
+  raftAttachPoint: {fileID: 566630132}
   maxRopeLength: 5
   ropeStrength: 10
   dampingRatio: 0.7
   ropeWidth: 0.05
-  ropeColor:
-    r: 0.55
-    g: 0.35
-    b: 0.15
-    a: 1
+  ropeColor: {r: 0.55, g: 0.35, b: 0.15, a: 1}
   sagAmount: 0.3
   sagSegments: 8
 --- !u!4 &240462298
@@ -728,7 +724,7 @@ GameObject:
   m_Component:
   - component: {fileID: 566630132}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
