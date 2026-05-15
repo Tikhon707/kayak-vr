@@ -3660,6 +3660,10 @@ PrefabInstance:
       propertyPath: headCamera
       value: 
       objectReference: {fileID: 963094352}
+    - target: {fileID: 4409779700426532426, guid: fa1ffe5b1a3a3d949becbd549adc8c1f, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6935705272560034376, guid: fa1ffe5b1a3a3d949becbd549adc8c1f, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3740,13 +3744,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7865567854858305094, guid: fa1ffe5b1a3a3d949becbd549adc8c1f, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 963094356}
     - target: {fileID: 8735630483166414021, guid: fa1ffe5b1a3a3d949becbd549adc8c1f, type: 3}
       propertyPath: m_Name
       value: ProfileSelectionCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 8735630483166414021, guid: fa1ffe5b1a3a3d949becbd549adc8c1f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
