@@ -6,19 +6,14 @@ public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance;
 
-    [Header("Ссылки")]
-    [SerializeField] private BoatDashboard dashboard;
-
-    [Header("Панели")]
+    [Header("Panels")]
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject victoryPanel;
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject pausePanel;
 
-    [Header("Текст итогов")]
     [SerializeField] private TextMeshProUGUI victoryTimeText;
 
-    [Header("Лидерборд")]
     [SerializeField] private LeaderboardUI leaderboardUI;
 
     private void Awake()
@@ -29,6 +24,16 @@ public class MenuManager : MonoBehaviour
 
     private void Start() => ShowMainMenu();
 
+    private void OnEnable()
+    {
+        RaceManager.OnRaceStarted += OnStartGameButton;
+    }
+
+    private void OnDisable()
+    {
+        RaceManager.OnRaceStarted -= OnStartGameButton;
+    }
+
     public void ShowMainMenu()
     {
         HideAllPanels();
@@ -38,7 +43,6 @@ public class MenuManager : MonoBehaviour
     public void ShowVictory(float finalTime)
     {
         HideAllPanels();
-        if (dashboard != null) dashboard.StopTimer();
         victoryPanel.SetActive(true);
 
         if (victoryTimeText != null)
@@ -61,14 +65,18 @@ public class MenuManager : MonoBehaviour
     public void ShowGameOver()
     {
         HideAllPanels();
-        if (dashboard) dashboard.StopTimer();
+
+        if (RaceManager.Instance != null)
+        {
+            RaceManager.Instance.currentState = RaceManager.RaceState.Finished;
+        }
+
         gameOverPanel.SetActive(true);
     }
 
     public void OnStartGameButton()
     {
         //HideAllPanels();
-        if (dashboard) dashboard.StartTimer();
     }
 
     public void OnRestartButton()
@@ -76,13 +84,13 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    
+
     public void OnPauseButton()
     {
         pausePanel.SetActive(true);
         Time.timeScale = 0f;
     }
-    
+
     public void OnResumeButton()
     {
         pausePanel.SetActive(false);

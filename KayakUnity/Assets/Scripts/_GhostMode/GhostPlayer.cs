@@ -78,7 +78,7 @@ public class GhostPlayer : MonoBehaviour
         if (_ghostTracker != null && kayakTransform)
         {
             var x = _ghostTracker.FindClosest(kayakTransform.position);
-            BoatDashboard.Instance.UpdateTimer2UI(x.closestTime);
+            BoatDashboard.Instance.UpdateGhostDifferenceUI(x.closestTime);
         }
     }
 }

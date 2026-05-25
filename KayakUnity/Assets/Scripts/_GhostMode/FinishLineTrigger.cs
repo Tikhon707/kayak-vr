@@ -2,13 +2,14 @@ using UnityEngine;
 
 public class FinishLineTrigger : MonoBehaviour
 {
-    public RaceManager raceManager;
-
     private void OnTriggerEnter(Collider other)
     {
-        if (raceManager != null)
+        if (other.CompareTag("Player"))
         {
-            raceManager.OnTriggerFinishLine();
+            if (RaceManager.Instance != null)
+            {
+                RaceManager.Instance.OnTriggerFinishLine();
+            }
         }
     }
 }

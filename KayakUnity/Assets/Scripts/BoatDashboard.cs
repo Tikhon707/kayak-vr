@@ -1,14 +1,13 @@
 using UnityEngine;
 using TMPro;
+using System.Text;
 
 public class BoatDashboard : MonoBehaviour
 {
-    [Header("Race settings")]
-    [Tooltip("Initial time seconds")]
-    [SerializeField] private float timeLimitInSeconds = 30f;
     public static BoatDashboard Instance;
 
-    [Header("UI")] [SerializeField] private TextMeshProUGUI timerText;
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI ghostDifferTimer;
     [SerializeField] private TextMeshProUGUI checkpointText;
     [SerializeField] private TextMeshProUGUI speedometerText;
@@ -16,17 +15,13 @@ public class BoatDashboard : MonoBehaviour
     [Header("Physics")]
     [SerializeField] private Rigidbody kayakRB;
 
-    [Header("Settings")] [SerializeField] private float speedUpdateInterval = 1.0f;
+    [Header("Settings")]
+    [SerializeField] private float speedUpdateInterval = 1.0f;
 
-    private float _currentTime;
-    private bool _isTimerRunning = false;
+    private StringBuilder _timerBuilder = new StringBuilder(16);
+    private StringBuilder _ghostTimerBuilder = new StringBuilder(16);
+
     private float _currentSpeedTimer;
-
-    public float CurrentTime => _currentTime;
-
-    // ─────────────────────────────────────────────
-    // Unity Events
-    // ─────────────────────────────────────────────
 
     private void Awake()
     {
@@ -36,54 +31,24 @@ public class BoatDashboard : MonoBehaviour
 
     private void Start()
     {
-        _currentTime = 0;
-        UpdateTimerUI(_currentTime);
-        //UpdateCheckpointsUI(0, 0);
+        UpdateTimerUI(0f);
     }
 
     private void Update()
     {
         UpdateSpeedMeter();
 
-        if (!_isTimerRunning) return;
-
-        _currentTime += Time.deltaTime;
-        UpdateTimerUI(_currentTime);
+        // Fetch time directly from the RaceManager
+        if (RaceManager.Instance != null && RaceManager.Instance.currentState == RaceManager.RaceState.Racing)
+        {
+            UpdateTimerUI(RaceManager.Instance.CurrentRaceTime);
+        }
     }
 
     // ─────────────────────────────────────────────
-    // Public Methods (for MenuManager and CheckpointManager)
+    // UI Update Methods
     // ─────────────────────────────────────────────
 
-    /// <summary>
-    /// Start timer (resets to initial)
-    /// </summary>
-    public void StartTimer()
-    {
-        _currentTime = 0;
-        _isTimerRunning = true;
-        UpdateTimerUI(_currentTime);
-    }
-
-    /// <summary>
-    /// Update timer
-    /// </summary>
-    public void StopTimer()
-    {
-        _isTimerRunning = false;
-    }
-
-    /// <summary>
-    /// Add time (after checkpoint)
-    /// </summary>
-    public void AddTime(float seconds)
-    {
-        _currentTime += seconds;
-    }
-
-    /// <summary>
-    /// Update checkpoint UI
-    /// </summary>
     public void UpdateCheckpointsUI(int current, int total)
     {
         if (checkpointText != null)
@@ -93,33 +58,33 @@ public class BoatDashboard : MonoBehaviour
     private void UpdateTimerUI(float time)
     {
         if (!timerText) return;
+
         System.TimeSpan t = System.TimeSpan.FromSeconds(time);
-        timerText.text = string.Format("{0:D2}:{1:D2}:{2:D3}", t.Minutes, t.Seconds, t.Milliseconds);
+        _timerBuilder.Clear();
+        _timerBuilder.AppendFormat("{0:00}:{1:00}:{2:000}", t.Minutes, t.Seconds, t.Milliseconds);
+
+        timerText.SetText(_timerBuilder);
     }
 
-    public void UpdateTimer2UI(float time)
+    public void UpdateGhostDifferenceUI(float ghostTimeAtThisPoint)
     {
-        if (!ghostDifferTimer) return;
-    
-        var resultTime = _currentTime - time;
-    
-        // Берем абсолютное значение для форматирования
+        if (!ghostDifferTimer || RaceManager.Instance == null) return;
+
+        var resultTime = RaceManager.Instance.CurrentRaceTime - ghostTimeAtThisPoint;
         float absoluteTime = Mathf.Abs(resultTime);
         System.TimeSpan t = System.TimeSpan.FromSeconds(absoluteTime);
-    
-        // Форматируем время
-        string timeString = $"{t.Minutes:D2}:{t.Seconds:D2}:{t.Milliseconds:D3}";
-    
-        // Добавляем минус только если результат отрицательный
-        if (resultTime < 0)
-            timeString = "-" + timeString;
-    
-        ghostDifferTimer.text = timeString;
-    
-        // Цвет: красный если игрок отстает, зеленый если опережает
+
+        _ghostTimerBuilder.Clear();
+
+        if (resultTime < 0) _ghostTimerBuilder.Append("-");
+
+        _ghostTimerBuilder.AppendFormat("{0:00}:{1:00}:{2:000}", t.Minutes, t.Seconds, t.Milliseconds);
+
+        ghostDifferTimer.SetText(_ghostTimerBuilder);
+
         if (resultTime > 0)
             ghostDifferTimer.color = Color.red;
-        else 
+        else
             ghostDifferTimer.color = Color.green;
     }
 

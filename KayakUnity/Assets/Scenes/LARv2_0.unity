@@ -1952,7 +1952,7 @@ PrefabInstance:
       objectReference: {fileID: 110999982}
     - target: {fileID: 1921615380153994925, guid: fd5c4b1563948484fa7424153f74bc04, type: 3}
       propertyPath: m_VersionIndex
-      value: 33
+      value: 264
       objectReference: {fileID: 0}
     - target: {fileID: 3650854637951126001, guid: fd5c4b1563948484fa7424153f74bc04, type: 3}
       propertyPath: isFinish
@@ -2008,7 +2008,7 @@ PrefabInstance:
       objectReference: {fileID: 436330963}
     - target: {fileID: 6795957083556453091, guid: fd5c4b1563948484fa7424153f74bc04, type: 3}
       propertyPath: m_VersionIndex
-      value: 31285
+      value: 31516
       objectReference: {fileID: 0}
     - target: {fileID: 6825573270974448701, guid: fd5c4b1563948484fa7424153f74bc04, type: 3}
       propertyPath: m_Mesh
@@ -2862,8 +2862,9 @@ GameObject:
   - component: {fileID: 940181622}
   - component: {fileID: 940181621}
   - component: {fileID: 940181623}
+  - component: {fileID: 940181624}
   m_Layer: 0
-  m_Name: RaceMAnager
+  m_Name: RaceManageScripts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2911,6 +2912,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GhostPlayer
   ghostTransform: {fileID: 1811567935}
+  kayakTransform: {fileID: 0}
 --- !u!114 &940181623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2923,12 +2925,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5396058eb555acd49890e0d5c5708e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RacistManager
-  recorder: {fileID: 940181621}
-  player: {fileID: 940181622}
   playerKayak: {fileID: 1095289339}
   countdownMenu: {fileID: 918072308}
   countdownText: {fileID: 728631871}
   currentState: 0
+--- !u!114 &940181624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940181618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b4752e06755c59438e53f5a512d5600, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GhostManager
+  recorder: {fileID: 940181621}
+  player: {fileID: 940181622}
 --- !u!1 &952947084
 GameObject:
   m_ObjectHideFlags: 0
@@ -4506,27 +4520,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9168629753335135747, guid: f680af2b9d0ed4006be2e7778f465b4d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.061844923
+      value: 0.47101188
       objectReference: {fileID: 0}
     - target: {fileID: 9168629753335135747, guid: f680af2b9d0ed4006be2e7778f465b4d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.06066883
+      value: 0.88212687
       objectReference: {fileID: 0}
     - target: {fileID: 9168629753335135747, guid: f680af2b9d0ed4006be2e7778f465b4d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.71117795
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9168629753335135747, guid: f680af2b9d0ed4006be2e7778f465b4d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.6976536
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9168629753335135747, guid: f680af2b9d0ed4006be2e7778f465b4d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 88.9
+      value: 123.8
       objectReference: {fileID: 0}
     - target: {fileID: 9168629753335135747, guid: f680af2b9d0ed4006be2e7778f465b4d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -170.06
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -5910,7 +5924,7 @@ PrefabInstance:
       objectReference: {fileID: 1516929031}
     - target: {fileID: 1921615380153994925, guid: fd5c4b1563948484fa7424153f74bc04, type: 3}
       propertyPath: m_VersionIndex
-      value: 33
+      value: 264
       objectReference: {fileID: 0}
     - target: {fileID: 3650854637951126001, guid: fd5c4b1563948484fa7424153f74bc04, type: 3}
       propertyPath: fadeDuration
@@ -5962,7 +5976,7 @@ PrefabInstance:
       objectReference: {fileID: 511730115}
     - target: {fileID: 6795957083556453091, guid: fd5c4b1563948484fa7424153f74bc04, type: 3}
       propertyPath: m_VersionIndex
-      value: 31285
+      value: 31516
       objectReference: {fileID: 0}
     - target: {fileID: 6825573270974448701, guid: fd5c4b1563948484fa7424153f74bc04, type: 3}
       propertyPath: m_Mesh

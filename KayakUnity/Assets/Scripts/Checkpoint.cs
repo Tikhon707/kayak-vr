@@ -3,16 +3,17 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [Header("Настройки")]
-    [SerializeField] private bool isFinish = false;
+    [Header("Settings")]
     [SerializeField] private float bonusTime = 15f;
     public float fadeDuration = 0.5f;
     public Transform arrow;
     private bool isTriggered = false;
 
-    [Header("Рендереры для растворения")]
+    [Header("Vanish renders")]
     public MeshRenderer ringRenderer;
     public MeshRenderer arrowRenderer;
+
+    [SerializeField] private GameObject finishFlagVisual;
 
     public void ResetCheckpoint() => isTriggered = false;
 
@@ -21,10 +22,21 @@ public class Checkpoint : MonoBehaviour
         if (!isTriggered && other.CompareTag("Player"))
         {
             isTriggered = true;
+            // Report that checkpoint is passed. The manager will figure out the rest.
+            if (CheckpointManager.Instance != null)
+            {
+                CheckpointManager.Instance.OnCheckpointPassed();
+            }
 
-            if (!isFinish) CheckpointManager.Instance.OnCheckpointPassed();
-            else CheckpointManager.Instance.OnFinish();
             StartCoroutine(FadeOutAndDisable());
+        }
+    }
+
+    public void ShowFinishFlag()
+    {
+        if (finishFlagVisual != null)
+        {
+            finishFlagVisual.SetActive(true);
         }
     }
 
@@ -48,11 +60,9 @@ public class Checkpoint : MonoBehaviour
     {
         float elapsedTime = 0f;
 
-        // Получаем уникальные копии материалов
         Material ringMat = ringRenderer != null ? ringRenderer.material : null;
         Material arrowMat = arrowRenderer != null ? arrowRenderer.material : null;
 
-        // Запоминаем их стартовые цвета (нам важен Альфа-канал)
         Color ringColor = ringMat != null ? ringMat.color : Color.white;
         Color arrowColor = arrowMat != null ? arrowMat.color : Color.white;
 

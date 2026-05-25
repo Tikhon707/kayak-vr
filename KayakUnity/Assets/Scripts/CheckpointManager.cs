@@ -5,15 +5,13 @@ public class CheckpointManager : MonoBehaviour
 {
     public static CheckpointManager Instance;
 
-    [Header("������")]
     [SerializeField] private BoatDashboard dashboard;
 
-    [Header("�����")]
+    [Header("SFX")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip checkpointClip;
     [SerializeField] private AudioClip finishClip;
 
-    [Header("���������")]
     [SerializeField] private int totalCheckpoints = 5;
 
     private int _passedCount = 0;
@@ -50,8 +48,24 @@ public class CheckpointManager : MonoBehaviour
             if (last != null)
             {
                 last.HideArrow();
+                last.ShowFinishFlag();
             }
         }
+    }
+
+    private void OnEnable()
+    {
+        RaceManager.OnRaceFinished += HandleFinishEvent;
+    }
+
+    private void OnDisable()
+    {
+        RaceManager.OnRaceFinished -= HandleFinishEvent;
+    }
+
+    private void HandleFinishEvent(float finalTime)
+    {
+        OnFinish();
     }
 
     public void OnCheckpointPassed()
@@ -69,7 +83,7 @@ public class CheckpointManager : MonoBehaviour
         if (PlayerProfile.HasName)
         {
             string scene = SceneManager.GetActiveScene().name;
-            LeaderboardService.AddRecord(scene, PlayerProfile.CurrentName, dashboard.CurrentTime);
+            LeaderboardService.AddRecord(scene, PlayerProfile.CurrentName, RaceManager.Instance.CurrentRaceTime);
         }
         else
         {
@@ -77,7 +91,7 @@ public class CheckpointManager : MonoBehaviour
         }
 
         if (audioSource && finishClip) audioSource.PlayOneShot(finishClip);
-        MenuManager.Instance.ShowVictory(dashboard.CurrentTime);
+        MenuManager.Instance.ShowVictory(RaceManager.Instance.CurrentRaceTime);
     }
 
     public void ResetAll()
