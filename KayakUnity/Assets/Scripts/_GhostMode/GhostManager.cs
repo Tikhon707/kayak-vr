@@ -27,13 +27,18 @@ public class GhostManager : MonoBehaviour
     private void OnEnable()
     {
         RaceManager.OnRaceStarted += StartGhostSystem;
-        RaceManager.OnRaceFinished += StopGhostSystem;
+        RaceManager.OnRaceFinished += OnRaceFinishedHandler;
     }
 
     private void OnDisable()
     {
         RaceManager.OnRaceStarted -= StartGhostSystem;
-        RaceManager.OnRaceFinished -= StopGhostSystem;
+        RaceManager.OnRaceFinished -= OnRaceFinishedHandler;
+    }
+
+    private void OnRaceFinishedHandler(float finalTime, int missedCount, float penaltyTime)
+    {
+        StopGhostSystem(finalTime);
     }
 
     public void StartGhostSystem()

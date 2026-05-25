@@ -13,8 +13,10 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
 
     [SerializeField] private TextMeshProUGUI victoryTimeText;
+    [SerializeField] private TextMeshProUGUI penaltyInfoText;
 
     [SerializeField] private LeaderboardUI leaderboardUI;
+
 
     private void Awake()
     {
@@ -27,11 +29,13 @@ public class MenuManager : MonoBehaviour
     private void OnEnable()
     {
         RaceManager.OnRaceStarted += OnStartGameButton;
+        RaceManager.OnRaceFinished += ShowVictory;
     }
 
     private void OnDisable()
     {
         RaceManager.OnRaceStarted -= OnStartGameButton;
+        RaceManager.OnRaceFinished -= ShowVictory;
     }
 
     public void ShowMainMenu()
@@ -40,7 +44,7 @@ public class MenuManager : MonoBehaviour
         mainMenuPanel.SetActive(true);
     }
 
-    public void ShowVictory(float finalTime)
+    public void ShowVictory(float finalTime, int missedCount, float penaltyTime)
     {
         HideAllPanels();
         victoryPanel.SetActive(true);
@@ -49,6 +53,22 @@ public class MenuManager : MonoBehaviour
         {
             System.TimeSpan t = System.TimeSpan.FromSeconds(finalTime);
             victoryTimeText.text = string.Format("TIME: {0:D2}:{1:D2}", t.Minutes, t.Seconds);
+        }
+
+        if (penaltyInfoText != null)
+        {
+            if (missedCount > 0)
+            {
+                penaltyInfoText.gameObject.SetActive(true);
+                penaltyInfoText.text = $"MISSED CHECKPOINTS: {missedCount}\nPENALTY: +{penaltyTime} SEC";
+                penaltyInfoText.color = Color.red;
+            }
+            else
+            {
+                penaltyInfoText.gameObject.SetActive(true);
+                penaltyInfoText.text = "PERFECT RUN! NO PENALTIES";
+                penaltyInfoText.color = Color.green;
+            }
         }
 
         Debug.Log($"[MenuManager] ShowVictory finalTime={finalTime}, leaderboardUI={(leaderboardUI == null ? "NULL" : leaderboardUI.name)}, currentName='{PlayerProfile.CurrentName}'");

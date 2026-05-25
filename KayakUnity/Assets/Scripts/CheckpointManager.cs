@@ -12,7 +12,7 @@ public class CheckpointManager : MonoBehaviour
     [SerializeField] private AudioClip checkpointClip;
     [SerializeField] private AudioClip finishClip;
 
-    [SerializeField] private int totalCheckpoints = 5;
+    [SerializeField] private int totalCheckpoints;
 
     private int _passedCount = 0;
 
@@ -63,27 +63,26 @@ public class CheckpointManager : MonoBehaviour
         RaceManager.OnRaceFinished -= HandleFinishEvent;
     }
 
-    private void HandleFinishEvent(float finalTime)
+    private void HandleFinishEvent(float finalTime, int missedCount, float penaltyTime)
     {
-        OnFinish();
+        OnFinish(finalTime);
     }
 
     public void OnCheckpointPassed()
     {
         _passedCount++;
-        //dashboard.AddTime(bonusTime);
         dashboard.UpdateCheckpointsUI(_passedCount, totalCheckpoints);
 
         if (audioSource && checkpointClip) audioSource.PlayOneShot(checkpointClip);
         Debug.Log($"[Checkpoint] {_passedCount}/{totalCheckpoints}");
     }
 
-    public void OnFinish()
+    public void OnFinish(float finalTime)
     {
         if (PlayerProfile.HasName)
         {
             string scene = SceneManager.GetActiveScene().name;
-            LeaderboardService.AddRecord(scene, PlayerProfile.CurrentName, RaceManager.Instance.CurrentRaceTime);
+            LeaderboardService.AddRecord(scene, PlayerProfile.CurrentName, finalTime);
         }
         else
         {
@@ -91,7 +90,6 @@ public class CheckpointManager : MonoBehaviour
         }
 
         if (audioSource && finishClip) audioSource.PlayOneShot(finishClip);
-        MenuManager.Instance.ShowVictory(RaceManager.Instance.CurrentRaceTime);
     }
 
     public void ResetAll()
@@ -100,5 +98,10 @@ public class CheckpointManager : MonoBehaviour
         dashboard.UpdateCheckpointsUI(0, totalCheckpoints);
         Checkpoint[] checkpoints = FindObjectsByType<Checkpoint>(FindObjectsSortMode.None);
         foreach (var cp in checkpoints) cp.ResetCheckpoint();
+    }
+
+    public int GetMissedCheckpointsCount()
+    {
+        return Mathf.Max(0, totalCheckpoints - _passedCount);
     }
 }

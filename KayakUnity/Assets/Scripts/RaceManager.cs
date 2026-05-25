@@ -7,8 +7,12 @@ public class RaceManager : MonoBehaviour
 {
     public static RaceManager Instance;
 
+    // --- EVENTS ---
     public static event Action OnRaceStarted;
-    public static event Action<float> OnRaceFinished;
+    public static event Action<float, int, float> OnRaceFinished;
+
+    [Header("Penalty Settings")]
+    [SerializeField] private float penaltyPerMissedCheckpoint = 5f;
 
     [Header("Components")]
     [SerializeField] private Rigidbody playerKayak;
@@ -86,7 +90,28 @@ public class RaceManager : MonoBehaviour
 
         currentState = RaceState.Finished;
 
-        OnRaceFinished?.Invoke(currentRaceTime);
+        float penaltyTime = 0f;
+        int missedCount = 0;
+        if (CheckpointManager.Instance != null)
+        {
+            missedCount = CheckpointManager.Instance.GetMissedCheckpointsCount();
+            penaltyTime = missedCount * penaltyPerMissedCheckpoint;
+
+            if (missedCount > 0)
+            {
+                Debug.Log($"[RaceManager] Penalties applied: {missedCount} missed x {penaltyPerMissedCheckpoint}s = +{penaltyTime}s");
+            }
+        }
+
+        float finalTotalTime = currentRaceTime + penaltyTime;
+
+        if (GhostManager.Instance != null)
+        {
+            // Pass finalTotalTime instead of currentRaceTime so the ghost record accounts for penalties
+            GhostManager.Instance.StopGhostSystem(finalTotalTime);
+        }
+
+        OnRaceFinished?.Invoke(finalTotalTime, missedCount, penaltyTime);
     }
 
     private void Update()
