@@ -32,7 +32,6 @@ public class GhostManager : MonoBehaviour
     {
         RaceManager.OnRaceStarted += StartGhostSystem;
         RaceManager.OnRaceFinished += OnRaceFinishedHandler;
-        RaceManager.OnRaceFinished += StopGhostSystem;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -45,7 +44,6 @@ public class GhostManager : MonoBehaviour
     private void OnRaceFinishedHandler(float finalTime, int missedCount, float penaltyTime)
     {
         StopGhostSystem(finalTime);
-        RaceManager.OnRaceFinished -= StopGhostSystem;
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
