@@ -594,12 +594,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb9f56d9b365474181af7cc26baeb7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  isFinish: 0
   bonusTime: 15
   fadeDuration: 0.5
   arrow: {fileID: 0}
   ringRenderer: {fileID: 0}
   arrowRenderer: {fileID: 0}
+  finishFlagVisual: {fileID: 0}
 --- !u!1 &507113529 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4835613551856175407, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
@@ -690,12 +690,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb9f56d9b365474181af7cc26baeb7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  isFinish: 1
   bonusTime: 15
   fadeDuration: 0.5
   arrow: {fileID: 0}
   ringRenderer: {fileID: 0}
   arrowRenderer: {fileID: 0}
+  finishFlagVisual: {fileID: 0}
 --- !u!114 &513518512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -708,7 +708,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97d4cbc8ed7bed44a66aab4cd003b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RacistTrigger
-  raceManager: {fileID: 940181623}
 --- !u!1 &516586450 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7938607749001943078, guid: b5aa023b752a20245a159086ab3e8c15, type: 3}
@@ -1693,6 +1692,7 @@ GameObject:
   - component: {fileID: 940181623}
   - component: {fileID: 940181622}
   - component: {fileID: 940181621}
+  - component: {fileID: 940181624}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -1772,12 +1772,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5396058eb555acd49890e0d5c5708e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RacistManager
-  recorder: {fileID: 940181622}
-  player: {fileID: 940181621}
   playerKayak: {fileID: 1095289339}
   countdownMenu: {fileID: 879674423}
   countdownText: {fileID: 1829371068}
   currentState: 0
+--- !u!114 &940181624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940181618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b4752e06755c59438e53f5a512d5600, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GhostManager
+  recorder: {fileID: 940181622}
+  player: {fileID: 940181621}
 --- !u!4 &963094352 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2710449129988704832, guid: 53616a54c89463649a046c603e48bc94, type: 3}

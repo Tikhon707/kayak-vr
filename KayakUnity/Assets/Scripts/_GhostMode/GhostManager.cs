@@ -1,5 +1,6 @@
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GhostManager : MonoBehaviour
 {
@@ -11,7 +12,10 @@ public class GhostManager : MonoBehaviour
 
     private GhostRun bestRun;
     private float bestTime = float.MaxValue;
-    private string SavePath => Application.persistentDataPath + "/best_ghost.json";
+    
+    // Свойство для получения ID текущей сцены
+    private string SceneID => SceneManager.GetActiveScene().name;
+    private string SavePath => Application.persistentDataPath + $"/best_ghost_{SceneID}.json";
 
     private void Awake()
     {
@@ -28,6 +32,8 @@ public class GhostManager : MonoBehaviour
     {
         RaceManager.OnRaceStarted += StartGhostSystem;
         RaceManager.OnRaceFinished += OnRaceFinishedHandler;
+        RaceManager.OnRaceFinished += StopGhostSystem;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable()
@@ -39,6 +45,15 @@ public class GhostManager : MonoBehaviour
     private void OnRaceFinishedHandler(float finalTime, int missedCount, float penaltyTime)
     {
         StopGhostSystem(finalTime);
+        RaceManager.OnRaceFinished -= StopGhostSystem;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        bestTime = float.MaxValue;
+        bestRun = null;
+        LoadGhost();
     }
 
     public void StartGhostSystem()
@@ -61,14 +76,13 @@ public class GhostManager : MonoBehaviour
             recorder.StopRecording();
         }
 
-        // Check if the current run broke the best time record
         if (finalRaceTime < bestTime)
         {
             bestTime = finalRaceTime;
             bestRun = recorder.CurrentRun;
             bestRun.raceTime = finalRaceTime;
             SaveGhost();
-            Debug.Log($"New record! Time: {bestTime:F2} sec.");
+            Debug.Log($"New record on {SceneID}! Time: {bestTime:F2} sec.");
         }
         else
         {
@@ -76,13 +90,11 @@ public class GhostManager : MonoBehaviour
         }
     }
 
-    // --- SAVE AND LOAD ---
-
     private void SaveGhost()
     {
         string json = JsonUtility.ToJson(bestRun);
         File.WriteAllText(SavePath, json);
-        Debug.Log("Ghost saved to: " + SavePath);
+        Debug.Log($"Ghost saved for {SceneID} to: {SavePath}");
     }
 
     private void LoadGhost()
@@ -92,7 +104,7 @@ public class GhostManager : MonoBehaviour
             string json = File.ReadAllText(SavePath);
             bestRun = JsonUtility.FromJson<GhostRun>(json);
             bestTime = bestRun.raceTime;
-            Debug.Log($"Ghost loaded. Last best time: {bestTime:F2} sec.");
+            Debug.Log($"Ghost loaded for {SceneID}. Best time: {bestTime:F2} sec.");
         }
     }
 }

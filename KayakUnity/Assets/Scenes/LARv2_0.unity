@@ -3336,7 +3336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GhostPlayer
   ghostTransform: {fileID: 1811567935}
-  kayakTransform: {fileID: 0}
+  kayakTransform: {fileID: 236947858}
 --- !u!114 &940181623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4108,7 +4108,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2171894728802317386, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1519687320}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1544679779242766064, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1372107986}
   m_SourcePrefab: {fileID: 100100000, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
 --- !u!1 &1289533192
 GameObject:
@@ -4519,6 +4522,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5842490170252880820, guid: fd5c4b1563948484fa7424153f74bc04, type: 3}
   m_PrefabInstance: {fileID: 2094137114}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1372107982 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1544679779242766064, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+  m_PrefabInstance: {fileID: 1264405452}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1372107986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372107982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9873a27e138c1a24fa7c864adbb7c913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DebugScript
+  forceAmount: 225.4
+  forceMode: 0
+  useLocalDirection: 1
+  continuousForce: 0
 --- !u!1 &1400878543
 GameObject:
   m_ObjectHideFlags: 0
