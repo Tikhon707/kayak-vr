@@ -15,6 +15,7 @@ public class CheckpointManager : MonoBehaviour
     [SerializeField] private int totalCheckpoints;
 
     private int _passedCount = 0;
+    public int PassedCount => _passedCount;
 
     private void Awake()
     {
