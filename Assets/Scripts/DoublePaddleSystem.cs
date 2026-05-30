@@ -40,6 +40,8 @@ public class DoublePaddleSystem : MonoBehaviour
     [Header("Collision Prevention")]
     [Tooltip("Слои с которыми весло НЕ должно проходить (каяк и т.д.)")]
     public LayerMask blockingLayers;
+    [Tooltip("Слой террейна")]
+    public LayerMask groundLayer;
     [Tooltip("Радиус проверки столкновений для лопастей")]
     public float bladeCollisionRadius = 0.08f;
     [Tooltip("Радиус проверки столкновений для стержня весла")]
@@ -205,11 +207,20 @@ public class DoublePaddleSystem : MonoBehaviour
         Vector3 current = tip.position;
         Vector3 velocity = (current - lastPos) / Time.fixedDeltaTime;
         lastPos = current;
-
+        bool currentlyOnGround = false;
         // Если лопасть внутри блокирующего объекта, не применяем силу
         if (Physics.CheckSphere(current, bladeCollisionRadius, blockingLayers))
         {
             inWater = false;
+            RaycastHit hit;
+            currentlyOnGround = Physics.SphereCast(
+            current,
+            bladeCollisionRadius,
+            Vector3.down,
+            out hit,
+            0.3f,
+            groundLayer
+        );
             return;
         }
 
@@ -230,7 +241,7 @@ public class DoublePaddleSystem : MonoBehaviour
         {
             Vector3 relVel = velocity - waterVelocity;
             Vector3 localVel = transform.InverseTransformDirection(relVel);
-            float angleEff = CalculateBladeEfficiency(blade.bladeRoot.up);
+ /*           float angleEff = CalculateBladeEfficiency(blade.bladeRoot.up);
 
             // Дополнительное снижение эффективности если руки слишком близко
             float handDistance = Vector3.Distance(constrainedLeftPos, constrainedRightPos);
@@ -247,7 +258,13 @@ public class DoublePaddleSystem : MonoBehaviour
             {
                 float drag = localVel.z * forceMultiplier * 0.3f * angleEff;
                 rb.AddForceAtPosition(-transform.forward * drag, current, ForceMode.Force);
-            }
+            }*/
+            MoveKayak(localVel.z, current, blade);
+        }
+        if (currentlyOnGround)
+        {
+            Vector3 localVel = transform.InverseTransformDirection(velocity);
+            MoveKayak(localVel.z, current, blade);
         }
         else
         {
@@ -258,6 +275,27 @@ public class DoublePaddleSystem : MonoBehaviour
                 airDrag.y = 0f;
                 rb.AddForceAtPosition(airDrag, current, ForceMode.Force);
             }
+        }
+    }
+
+    void MoveKayak(float localVel, Vector3 current, Blade blade)
+    {
+        float angleEff = CalculateBladeEfficiency(blade.bladeRoot.up);
+
+        // Дополнительное снижение эффективности если руки слишком близко
+        float handDistance = Vector3.Distance(constrainedLeftPos, constrainedRightPos);
+        float distanceEfficiency = Mathf.Clamp01((handDistance - minHandDistance) / (maxHandDistance - minHandDistance));
+        angleEff *= distanceEfficiency;
+        if (localVel < -0.1f) // Pulling back (effective stroke)
+        {
+            float speed = Mathf.Clamp(-localVel, 0f, maxEffectiveSpeed);
+            Vector3 force = transform.forward * speed * forceMultiplier * angleEff;
+            rb.AddForceAtPosition(force, current, ForceMode.Force);
+        }
+        else if (localVel > 0.1f) // Pushing forward (drag when submerged)
+        {
+            float drag = localVel * forceMultiplier * 0.3f * angleEff;
+            rb.AddForceAtPosition(-transform.forward * drag, current, ForceMode.Force);
         }
     }
 
