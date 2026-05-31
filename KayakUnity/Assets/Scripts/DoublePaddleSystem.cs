@@ -211,6 +211,9 @@ public class DoublePaddleSystem : MonoBehaviour
             }
             else
             {
+                Vector3 localVel = transform.InverseTransformDirection(relVel);
+                float angleEff = Mathf.Lerp(minEfficiency, maxEfficiency, Mathf.Pow(Mathf.Abs(Vector3.Dot(blade.bladeRoot.up, Vector3.up)), 2));
+
                 if(currentlyInWater)
                     rb.AddForceAtPosition(waterVelocity * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * angleEff, current, ForceMode.Force);
             }
