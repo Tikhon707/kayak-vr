@@ -30,12 +30,14 @@ public class MenuManager : MonoBehaviour
     {
         RaceManager.OnRaceStarted += OnStartGameButton;
         RaceManager.OnRaceFinished += ShowVictory;
+        AdrenalineManager.OnBombExploded += ShowGameOver;
     }
 
     private void OnDisable()
     {
         RaceManager.OnRaceStarted -= OnStartGameButton;
         RaceManager.OnRaceFinished -= ShowVictory;
+        AdrenalineManager.OnBombExploded -= ShowGameOver;
     }
 
     public void ShowMainMenu()

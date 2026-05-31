@@ -1,6 +1,7 @@
-using UnityEngine;
-using TMPro;
+using System;
 using System.Text;
+using TMPro;
+using UnityEngine;
 
 public class BoatDashboard : MonoBehaviour
 {
@@ -16,12 +17,16 @@ public class BoatDashboard : MonoBehaviour
     [SerializeField] private Rigidbody kayakRB;
 
     [Header("Settings")]
-    [SerializeField] private float speedUpdateInterval = 1.0f;
+    [SerializeField] private float speedUpdateInterval = 2.0f;
+    // ADDED: Throttle UI updates to save massive CPU cycles at 72/90 FPS
+    [SerializeField] private float uiRefreshInterval = 0.05f;
 
     private StringBuilder _timerBuilder = new StringBuilder(16);
     private StringBuilder _ghostTimerBuilder = new StringBuilder(16);
 
     private float _currentSpeedTimer;
+    private float _currentUiTimer; // ADDED: Timer to control general UI refresh rate
+    private float _lastRenderedTime = -1f; // ADDED: Cache to prevent re-rendering identical time values
 
     private void Awake()
     {
@@ -36,12 +41,25 @@ public class BoatDashboard : MonoBehaviour
 
     private void Update()
     {
-        UpdateSpeedMeter();
+        // EDITED: Combined UI updates into a throttled system to keep stable FPS on Standalone VR
+        float deltaTime = Time.deltaTime;
+        _currentSpeedTimer += deltaTime;
+        _currentUiTimer += deltaTime;
 
-        // Fetch time directly from the RaceManager
-        if (RaceManager.Instance != null && RaceManager.Instance.currentState == RaceManager.RaceState.Racing)
+        if (_currentSpeedTimer >= speedUpdateInterval)
         {
-            UpdateTimerUI(RaceManager.Instance.CurrentRaceTime);
+            _currentSpeedTimer = 0f;
+            UpdateSpeedMeter();
+        }
+
+        if (_currentUiTimer >= uiRefreshInterval)
+        {
+            _currentUiTimer = 0f;
+
+            if (RaceManager.Instance != null && RaceManager.Instance.currentState == RaceManager.RaceState.Racing)
+            {
+                UpdateTimerUI(RaceManager.Instance.CurrentRaceTime);
+            }
         }
     }
 
@@ -59,7 +77,11 @@ public class BoatDashboard : MonoBehaviour
     {
         if (!timerText) return;
 
-        System.TimeSpan t = System.TimeSpan.FromSeconds(time);
+        // EDITED: Avoid optimization overhead if the time hasn't changed significantly since last frame
+        if (Mathf.Abs(time - _lastRenderedTime) < 0.001f) return;
+        _lastRenderedTime = time;
+
+        TimeSpan t = TimeSpan.FromSeconds(time);
         _timerBuilder.Clear();
         _timerBuilder.AppendFormat("{0:00}:{1:00}:{2:000}", t.Minutes, t.Seconds, t.Milliseconds);
 
@@ -82,29 +104,29 @@ public class BoatDashboard : MonoBehaviour
 
         ghostDifferTimer.SetText(_ghostTimerBuilder);
 
-        if (resultTime > 0)
-            ghostDifferTimer.color = Color.red;
-        else
-            ghostDifferTimer.color = Color.green;
+        // EDITED: Only modify color if it actually changes to prevent internal graphic component dirtying
+        Color targetColor = resultTime > 0 ? Color.red : Color.green;
+        if (ghostDifferTimer.color != targetColor)
+        {
+            ghostDifferTimer.color = targetColor;
+        }
     }
 
     private void UpdateSpeedMeter()
     {
         if (!kayakRB || !speedometerText) return;
 
-        _currentSpeedTimer += Time.deltaTime;
-        if (_currentSpeedTimer < speedUpdateInterval) return;
-
-        _currentSpeedTimer = 0f;
-
         float sqrSpeed = kayakRB.linearVelocity.sqrMagnitude;
         if (sqrSpeed < 0.1f)
         {
-            speedometerText.text = "0 km/h";
+            // EDITED: Avoid string allocation by using a pre-allocated literal or TMP internal buffer
+            speedometerText.SetText("0 km/h");
             return;
         }
 
         float realSpeed = Mathf.Sqrt(sqrSpeed) * 3.6f;
-        speedometerText.text = $"{realSpeed:F0} km/h";
+        // EDITED: Exploit TextMeshPro's zero-allocation native formatting method.
+        // This completely eliminates GC allocation leaks without needing a custom StringBuilder setup.
+        speedometerText.SetText("{0:0} km/h", realSpeed);
     }
 }
