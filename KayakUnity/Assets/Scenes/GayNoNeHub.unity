@@ -2459,11 +2459,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3562490301423696488, guid: e00d88c8cb2aff5418c6397016e1811b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -33.91
       objectReference: {fileID: 0}
     - target: {fileID: 3562490301423696488, guid: e00d88c8cb2aff5418c6397016e1811b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.513
+      value: 15.009
       objectReference: {fileID: 0}
     - target: {fileID: 3562490301423696488, guid: e00d88c8cb2aff5418c6397016e1811b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4227,11 +4227,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2171894728802317386, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -33.91
       objectReference: {fileID: 0}
     - target: {fileID: 2171894728802317386, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.292
+      value: 14.788
       objectReference: {fileID: 0}
     - target: {fileID: 2171894728802317386, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4281,6 +4281,10 @@ PrefabInstance:
       propertyPath: rightController
       value: 
       objectReference: {fileID: 624115105}
+    - target: {fileID: 8135443800744371175, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 8135443800744371175, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: leftBlade.bladeTip
       value: 
@@ -311825,7 +311829,7 @@ GameObject:
   - component: {fileID: 2009203627}
   - component: {fileID: 2009203626}
   - component: {fileID: 2009203625}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -312275,11 +312279,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 882261471972392211, guid: 53616a54c89463649a046c603e48bc94, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -33.91
       objectReference: {fileID: 0}
     - target: {fileID: 882261471972392211, guid: 53616a54c89463649a046c603e48bc94, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.054
+      value: 14.55
       objectReference: {fileID: 0}
     - target: {fileID: 882261471972392211, guid: 53616a54c89463649a046c603e48bc94, type: 3}
       propertyPath: m_LocalPosition.z
