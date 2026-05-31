@@ -194,17 +194,25 @@ public class DoublePaddleSystem : MonoBehaviour
                 if (!blade.bladeAudio.isPlaying) blade.bladeAudio.Play();
                 blade.bladeAudio.volume = Mathf.Lerp(blade.bladeAudio.volume, calculatedVolume, Time.fixedDeltaTime * 8f);
             }
+            if(intensity > 0.1f)
+            {
 
-            // ������: ���������� ���� ������
-            Vector3 localVel = transform.InverseTransformDirection(relVel);
-            float angleEff = Mathf.Lerp(minEfficiency, maxEfficiency, Mathf.Pow(Mathf.Abs(Vector3.Dot(blade.bladeRoot.up, Vector3.up)), 2));
+                // ������: ���������� ���� ������
+                Vector3 localVel = transform.InverseTransformDirection(relVel);
+                float angleEff = Mathf.Lerp(minEfficiency, maxEfficiency, Mathf.Pow(Mathf.Abs(Vector3.Dot(blade.bladeRoot.up, Vector3.up)), 2));
 
-            if (localVel.z < -0.1f) // ����� �����
+                if (localVel.z < -0.1f) // ����� �����
+                {
+                    if(currentlyInWater)
+                        rb.AddForceAtPosition(transform.forward * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * angleEff, current, ForceMode.Force);
+                    else
+                        rb.AddForceAtPosition(transform.forward * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * minEfficiency, current, ForceMode.Force);
+                }
+            }
+            else
             {
                 if(currentlyInWater)
-                    rb.AddForceAtPosition(transform.forward * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * angleEff, current, ForceMode.Force);
-                else
-                    rb.AddForceAtPosition(transform.forward * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * minEfficiency, current, ForceMode.Force);
+                    rb.AddForceAtPosition(waterVelocity * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * angleEff, current, ForceMode.Force);
             }
         }
         else if (wasInWater)
