@@ -49,6 +49,7 @@ public class DoublePaddleSystem : MonoBehaviour
 
     [Header("Collision Prevention")]
     public LayerMask blockingLayers;
+    public LayerMask groundLayer;
     public float bladeCollisionRadius = 0.08f;
     public float shaftCollisionRadius = 0.03f;
     public int shaftCheckPoints = 5;
@@ -151,8 +152,16 @@ public class DoublePaddleSystem : MonoBehaviour
         Vector3 velocity = (current - lastPos) / Time.fixedDeltaTime;
         lastPos = current;
 
+        bool currentlyOnGround = false;
+
         // ���� ������� ������ ����� � ���������� ����
-        if (Physics.CheckSphere(current, bladeCollisionRadius, blockingLayers)) { wasInWater = false; return; }
+        if (Physics.CheckSphere(current, bladeCollisionRadius, blockingLayers)) 
+        { 
+            wasInWater = false; 
+            RaycastHit hit;
+            currentlyOnGround = Physics.SphereCast(current, bladeCollisionRadius, Vector3.down, out hit, 0.5f, groundLayer); 
+            return; 
+        }
 
 
         heightHelper.Init(current, minSpatialLength);
@@ -163,15 +172,15 @@ public class DoublePaddleSystem : MonoBehaviour
 
         bool currentlyInWater = current.y < waterHeight + bladeDepthThreshold;
 
-        if (currentlyInWater)
-        {
+        if (currentlyInWater || currentlyOnGround)
+        {           
             Vector3 relVel = velocity - waterVelocity;
             float intensity = relVel.magnitude;
 
             // ������ ��������� ���������: $V = \sqrt{intensity / maxSpeed} \cdot multiplier$
             float normIntensity = Mathf.Clamp01(intensity / maxEffectiveSpeed);
             float calculatedVolume = Mathf.Sqrt(normIntensity) * volumeMultiplier;
-
+            
             // ����: ������ �������� ��� �����
             if (!wasInWater && intensity > 0.35f && splashClip != null)
             {
@@ -192,14 +201,16 @@ public class DoublePaddleSystem : MonoBehaviour
 
             if (localVel.z < -0.1f) // ����� �����
             {
-                rb.AddForceAtPosition(transform.forward * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * angleEff, current, ForceMode.Force);
+                if(currentlyInWater)
+                    rb.AddForceAtPosition(transform.forward * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * angleEff, current, ForceMode.Force);
+                else
+                    rb.AddForceAtPosition(transform.forward * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * minEfficiency, current, ForceMode.Force);
             }
         }
         else if (wasInWater)
         {
             StopBladeAudio(blade);
         }
-
         wasInWater = currentlyInWater;
     }
 
