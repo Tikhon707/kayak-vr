@@ -158,11 +158,20 @@ public class DoublePaddleSystem : MonoBehaviour
         if (Physics.CheckSphere(current, bladeCollisionRadius, blockingLayers)) 
         { 
             wasInWater = false; 
-            RaycastHit hit;
-            currentlyOnGround = Physics.SphereCast(current, bladeCollisionRadius, Vector3.down, out hit, 0.5f, groundLayer); 
             return; 
         }
 
+        RaycastHit hit;
+        //Physics.Raycast(current, Vector3.down, out hit, 3f, groundLayer);
+        Physics.SphereCast(        current,        5f,        Vector3.down,         out hit,     2f,            groundLayer   );
+        Debug.Log(hit.collider);
+        Debug.Log(Physics.CheckSphere(current, bladeCollisionRadius, groundLayer));
+        currentlyOnGround = Physics.CheckSphere(current, 1f, groundLayer);
+        if(hit.collider is not null)
+        {
+            Debug.Log("Na zemle");
+         //   currentlyOnGround = hit.collider.gameObject.layer == 8;
+        }
 
         heightHelper.Init(current, minSpatialLength);
         if (!heightHelper.Sample(out float waterHeight, out _, out Vector3 waterVelocity)) return;
