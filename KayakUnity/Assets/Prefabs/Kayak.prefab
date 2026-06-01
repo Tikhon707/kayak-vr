@@ -203,7 +203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29885b1e9fd86d14ab84a4ec918af5ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuoyancySystem
-  waterLevel: 0
   waterDensity: 1000
   baseVerticalDamping: 15
   baseHorizontalDamping: 3
@@ -225,6 +224,7 @@ MonoBehaviour:
     area: 0.1
   - localPosition: {x: 0, y: -0.05, z: 0}
     area: 0.5
+  minSpatialLength: 2
   useVRCenterOfMass: 1
   vrCamera: {fileID: 0}
   horizontalInfluence: 0.2
@@ -255,15 +255,36 @@ MonoBehaviour:
   leftBlade:
     bladeRoot: {fileID: 0}
     bladeTip: {fileID: 0}
-    isLeft: 1
+    bladeAudio: {fileID: 0}
+    constrainedPosition: {x: 0, y: 0, z: 0}
   rightBlade:
     bladeRoot: {fileID: 0}
     bladeTip: {fileID: 0}
-    isLeft: 0
-  waterLevel: 0
+    bladeAudio: {fileID: 0}
+    constrainedPosition: {x: 0, y: 0, z: 0}
+  ambientWaterSource: {fileID: 0}
+  ambientBaseVolume: 0.15
+  ambientSpeedMultiplier: 0.12
+  splashClip: {fileID: 0}
+  volumeMultiplier: 1.3
+  pitchMin: 0.85
+  pitchMax: 1.15
+  minHandDistance: 0.4
+  maxHandDistance: 1.5
   bladeDepthThreshold: -0.05
   maxEffectiveSpeed: 2.5
   forceMultiplier: 270
   recoveryDrag: 0.5
   minEfficiency: 0.1
   maxEfficiency: 1
+  blockingLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  bladeCollisionRadius: 0.08
+  shaftCollisionRadius: 0.03
+  shaftCheckPoints: 5
+  minSpatialLength: 1
+  showDebugInfo: 1
