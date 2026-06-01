@@ -9,7 +9,7 @@ public class DoublePaddleSystem : MonoBehaviour
     {
         public Transform bladeRoot;
         public Transform bladeTip;
-        public AudioSource bladeAudio; // ������ ���� �� ������� BladeTip
+        public AudioSource bladeAudio;
         [HideInInspector] public Vector3 constrainedPosition;
     }
 
@@ -19,6 +19,11 @@ public class DoublePaddleSystem : MonoBehaviour
 
     [Header("Paddle Transform")]
     public Transform doublePaddle;
+
+    // ADDED
+    [Header("Physical Paddle Interaction")]
+    public Rigidbody paddleRb;
+    public float groundPushForce = 500f; 
 
     [Header("Blades Setup")]
     public Blade leftBlade;
@@ -41,7 +46,7 @@ public class DoublePaddleSystem : MonoBehaviour
 
     [Header("Physics Settings")]
     public float bladeDepthThreshold = -0.05f;
-    public float maxEffectiveSpeed = 2.0f; // �������, ����� ���� ��� ������ ��� ������� �������
+    public float maxEffectiveSpeed = 2.0f;
     public float forceMultiplier = 70f;
     public float recoveryDrag = 0.5f;
     public float minEfficiency = 0.1f;
@@ -71,6 +76,9 @@ public class DoublePaddleSystem : MonoBehaviour
 
     private Vector3 constrainedLeftPos, constrainedRightPos;
 
+    // ADDED: Вектор силы для отталкивания от земли
+    private Vector3 _currentGroundPushForce;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -83,11 +91,9 @@ public class DoublePaddleSystem : MonoBehaviour
 
     void Update()
     {
-        // ���������� ���������� ������� ���������
         if (ambientWaterSource != null)
         {
             float boatSpeed = rb.linearVelocity.magnitude;
-            // ���������: ������� + ����������� �� ��������
             ambientWaterSource.volume = Mathf.Clamp(ambientBaseVolume + (boatSpeed * ambientSpeedMultiplier), 0f, 1f);
             ambientWaterSource.pitch = Mathf.Lerp(0.9f, 1.1f, boatSpeed / 5f);
         }
@@ -97,11 +103,9 @@ public class DoublePaddleSystem : MonoBehaviour
     {
         if (leftController == null || rightController == null || doublePaddle == null) return;
 
-        // �������� ������������ ������������ � ������
         constrainedLeftPos = GetConstrainedPosition(leftController.position, constrainedLeftPos);
         constrainedRightPos = GetConstrainedPosition(rightController.position, constrainedRightPos);
 
-        // �������� ����������� ������� ����� ������ �������
         if (CheckShaftCollision(constrainedLeftPos, constrainedRightPos))
         {
             constrainedLeftPos = leftBlade.constrainedPosition;
@@ -114,16 +118,43 @@ public class DoublePaddleSystem : MonoBehaviour
         float handDistance = Vector3.Distance(constrainedLeftPos, constrainedRightPos);
         isPaddleActive = handDistance >= minHandDistance && handDistance <= maxHandDistance;
 
-        // ���������� ���������� �����
-        doublePaddle.position = (constrainedLeftPos + constrainedRightPos) * 0.5f;
+        // EDITED: Extracted position and rotation calculations into local variables so we can route them to the Rigidbody
+        Vector3 targetPaddlePos = (constrainedLeftPos + constrainedRightPos) * 0.5f;
         Vector3 forward = constrainedRightPos - constrainedLeftPos;
-        if (forward.magnitude > 0.01f)
-            doublePaddle.rotation = Quaternion.LookRotation(forward, Vector3.up);
+        Quaternion targetPaddleRot = forward.magnitude > 0.01f ? Quaternion.LookRotation(forward, Vector3.up) : doublePaddle.rotation;
+
+        // EDITED: Use Rigidbody.MovePosition/Rotation if physical paddle is assigned, otherwise fallback to transform
+        if (paddleRb != null)
+        {
+            paddleRb.MovePosition(targetPaddlePos);
+            paddleRb.MoveRotation(targetPaddleRot);
+        }
+        else
+        {
+            doublePaddle.position = targetPaddlePos;
+            doublePaddle.rotation = targetPaddleRot;
+        }
+
+        // ADDED: Calculate how far the real controllers are pushed past the constrained collision positions
+        _currentGroundPushForce = Vector3.zero;
+
+        Vector3 leftPushOffset = leftController.position - constrainedLeftPos;
+        Vector3 rightPushOffset = rightController.position - constrainedRightPos;
+
+        // ADDED: If the offset exceeds 5cm, accumulate it as ground push force (inverted)
+        if (leftPushOffset.magnitude > 0.05f) _currentGroundPushForce += -leftPushOffset;
+        if (rightPushOffset.magnitude > 0.05f) _currentGroundPushForce += -rightPushOffset;
     }
 
     void FixedUpdate()
     {
-        if (OceanRenderer.Instance == null) return; // �������� ������� ������� Crest [cite: 312]
+        // ADDED: Apply the accumulated ground push force to the kayak Rigidbody
+        if (_currentGroundPushForce.magnitude > 0f)
+        {
+            rb.AddForce(_currentGroundPushForce * groundPushForce, ForceMode.Force);
+        }
+
+        if (OceanRenderer.Instance == null) return;
 
         if (!_initialized)
         {
@@ -151,7 +182,7 @@ public class DoublePaddleSystem : MonoBehaviour
         Vector3 velocity = (current - lastPos) / Time.fixedDeltaTime;
         lastPos = current;
 
-        // ���� ������� ������ ����� � ���������� ����
+
         if (Physics.CheckSphere(current, bladeCollisionRadius, blockingLayers)) { wasInWater = false; return; }
 
 
@@ -168,29 +199,27 @@ public class DoublePaddleSystem : MonoBehaviour
             Vector3 relVel = velocity - waterVelocity;
             float intensity = relVel.magnitude;
 
-            // ������ ��������� ���������: $V = \sqrt{intensity / maxSpeed} \cdot multiplier$
+            //  $V = \sqrt{intensity / maxSpeed} \cdot multiplier$
             float normIntensity = Mathf.Clamp01(intensity / maxEffectiveSpeed);
             float calculatedVolume = Mathf.Sqrt(normIntensity) * volumeMultiplier;
 
-            // ����: ������ �������� ��� �����
+            // 
             if (!wasInWater && intensity > 0.35f && splashClip != null)
             {
                 blade.bladeAudio.pitch = Random.Range(pitchMin, pitchMax);
                 blade.bladeAudio.PlayOneShot(splashClip, calculatedVolume);
             }
 
-            // ����: ���������� �������� ��� �������� ��� �����
             if (intensity > 0.15f)
             {
                 if (!blade.bladeAudio.isPlaying) blade.bladeAudio.Play();
                 blade.bladeAudio.volume = Mathf.Lerp(blade.bladeAudio.volume, calculatedVolume, Time.fixedDeltaTime * 8f);
             }
 
-            // ������: ���������� ���� ������
             Vector3 localVel = transform.InverseTransformDirection(relVel);
             float angleEff = Mathf.Lerp(minEfficiency, maxEfficiency, Mathf.Pow(Mathf.Abs(Vector3.Dot(blade.bladeRoot.up, Vector3.up)), 2));
 
-            if (localVel.z < -0.1f) // ����� �����
+            if (localVel.z < -0.1f)
             {
                 rb.AddForceAtPosition(transform.forward * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * angleEff, current, ForceMode.Force);
             }
@@ -209,7 +238,6 @@ public class DoublePaddleSystem : MonoBehaviour
             blade.bladeAudio.Stop();
     }
 
-    // ���� �������� ������ �������������� ����������� ������ ����
     Vector3 GetConstrainedPosition(Vector3 targetPos, Vector3 currentPos)
     {
         Vector3 direction = targetPos - currentPos;
