@@ -62,10 +62,16 @@ public class AdrenalineManager : MonoBehaviour
         {
             float normalizedThreshold = Mathf.Clamp01(minimumPaceSpeed / maxDisplaySpeed);
 
-            // Adjust the anchor to perfectly align the marker with the required speed
-            paceMarker.anchorMin = new Vector2(normalizedThreshold, 0f);
-            paceMarker.anchorMax = new Vector2(normalizedThreshold, 1f);
-            paceMarker.anchoredPosition = Vector2.zero;
+            // Save the actual visual HEIGHT of the marker before changing anchors
+            float markerHeight = paceMarker.rect.height;
+
+            // Anchor to the Y axis (vertical position), stretch across X (horizontal width)
+            paceMarker.anchorMin = new Vector2(0f, normalizedThreshold);
+            paceMarker.anchorMax = new Vector2(1f, normalizedThreshold);
+
+            // Apply the saved height explicitly so it doesn't vanish, keeping the X offset at 0
+            paceMarker.offsetMin = new Vector2(0f, -markerHeight / 2f);
+            paceMarker.offsetMax = new Vector2(0f, markerHeight / 2f);
         }
     }
 
