@@ -22,7 +22,6 @@ public class DoublePaddleSystem : MonoBehaviour
 
     // ADDED
     [Header("Physical Paddle Interaction")]
-    public Rigidbody paddleRb;
     public float groundPushForce = 500f; 
 
     [Header("Blades Setup")]
@@ -118,21 +117,14 @@ public class DoublePaddleSystem : MonoBehaviour
         float handDistance = Vector3.Distance(constrainedLeftPos, constrainedRightPos);
         isPaddleActive = handDistance >= minHandDistance && handDistance <= maxHandDistance;
 
-        // EDITED: Extracted position and rotation calculations into local variables so we can route them to the Rigidbody
         Vector3 targetPaddlePos = (constrainedLeftPos + constrainedRightPos) * 0.5f;
         Vector3 forward = constrainedRightPos - constrainedLeftPos;
-        Quaternion targetPaddleRot = forward.magnitude > 0.01f ? Quaternion.LookRotation(forward, Vector3.up) : doublePaddle.rotation;
 
-        // EDITED: Use Rigidbody.MovePosition/Rotation if physical paddle is assigned, otherwise fallback to transform
-        if (paddleRb != null)
+        // EDITED: Reverted to direct transform manipulation to fix 0 velocity bug and VR rotation twist
+        doublePaddle.position = targetPaddlePos;
+        if (forward.magnitude > 0.01f)
         {
-            paddleRb.MovePosition(targetPaddlePos);
-            paddleRb.MoveRotation(targetPaddleRot);
-        }
-        else
-        {
-            doublePaddle.position = targetPaddlePos;
-            doublePaddle.rotation = targetPaddleRot;
+            doublePaddle.rotation = Quaternion.LookRotation(forward, Vector3.up);
         }
 
         // ADDED: Calculate how far the real controllers are pushed past the constrained collision positions
