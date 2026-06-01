@@ -166,7 +166,7 @@ public class DoublePaddleSystem : MonoBehaviour
         Physics.SphereCast(        current,        5f,        Vector3.down,         out hit,     2f,            groundLayer   );
         Debug.Log(hit.collider);
         Debug.Log(Physics.CheckSphere(current, bladeCollisionRadius, groundLayer));
-        currentlyOnGround = Physics.CheckSphere(current, 1f, groundLayer);
+        currentlyOnGround = Physics.CheckSphere(current, 3f, groundLayer);
         if(hit.collider is not null)
         {
             Debug.Log("Na zemle");
