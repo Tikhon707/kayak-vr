@@ -289,8 +289,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb9f56d9b365474181af7cc26baeb7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  isFinish: 0
   bonusTime: 15
+  fadeDuration: 0.5
+  arrow: {fileID: 0}
+  ringRenderer: {fileID: 0}
+  arrowRenderer: {fileID: 0}
+  finishFlagVisual: {fileID: 0}
 --- !u!1 &97901523 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4662379165784314133, guid: e00d88c8cb2aff5418c6397016e1811b, type: 3}
@@ -571,6 +575,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 527577750}
   m_SourcePrefab: {fileID: 100100000, guid: cdff5502e67a73e418dd4ca9682a8fd8, type: 3}
+--- !u!114 &340402363 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1038292352111804109, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+  m_PrefabInstance: {fileID: 948327977}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 548878e7342c9a744ba7210bc47c479a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeaderboardUI
 --- !u!1 &366775897 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: cdff5502e67a73e418dd4ca9682a8fd8, type: 3}
@@ -656,8 +671,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb9f56d9b365474181af7cc26baeb7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  isFinish: 0
   bonusTime: 15
+  fadeDuration: 0.5
+  arrow: {fileID: 0}
+  ringRenderer: {fileID: 0}
+  arrowRenderer: {fileID: 0}
+  finishFlagVisual: {fileID: 0}
 --- !u!1001 &432097710
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -828,8 +847,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb9f56d9b365474181af7cc26baeb7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  isFinish: 1
   bonusTime: 15
+  fadeDuration: 0.5
+  arrow: {fileID: 0}
+  ringRenderer: {fileID: 0}
+  arrowRenderer: {fileID: 0}
+  finishFlagVisual: {fileID: 0}
 --- !u!114 &513518512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -842,7 +865,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97d4cbc8ed7bed44a66aab4cd003b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RacistTrigger
-  raceManager: {fileID: 940181623}
 --- !u!1 &527577740 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: cdff5502e67a73e418dd4ca9682a8fd8, type: 3}
@@ -928,8 +950,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb9f56d9b365474181af7cc26baeb7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  isFinish: 0
   bonusTime: 15
+  fadeDuration: 0.5
+  arrow: {fileID: 0}
+  ringRenderer: {fileID: 0}
+  arrowRenderer: {fileID: 0}
+  finishFlagVisual: {fileID: 0}
 --- !u!1 &571050876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1102,8 +1128,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb9f56d9b365474181af7cc26baeb7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  isFinish: 0
   bonusTime: 15
+  fadeDuration: 0.5
+  arrow: {fileID: 0}
+  ringRenderer: {fileID: 0}
+  arrowRenderer: {fileID: 0}
+  finishFlagVisual: {fileID: 0}
 --- !u!1 &728631870
 GameObject:
   m_ObjectHideFlags: 0
@@ -1672,6 +1702,10 @@ PrefabInstance:
       propertyPath: dashboard
       value: 
       objectReference: {fileID: 1519687319}
+    - target: {fileID: 5913745633094671243, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
+      propertyPath: leaderboardUI
+      value: 
+      objectReference: {fileID: 340402363}
     - target: {fileID: 7234870623720324640, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
       propertyPath: m_Name
       value: VR_HUD_Canvas
@@ -1778,6 +1812,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GhostPlayer
   ghostTransform: {fileID: 1811567935}
+  kayakTransform: {fileID: 0}
 --- !u!114 &940181623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1790,8 +1825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5396058eb555acd49890e0d5c5708e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RacistManager
-  recorder: {fileID: 940181621}
-  player: {fileID: 940181622}
+  penaltyPerMissedCheckpoint: 5
   playerKayak: {fileID: 1095289339}
   countdownMenu: {fileID: 918072308}
   countdownText: {fileID: 728631871}
@@ -1881,6 +1915,107 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1187671130}
   m_SourcePrefab: {fileID: 100100000, guid: cdff5502e67a73e418dd4ca9682a8fd8, type: 3}
+--- !u!1001 &948327977
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 452.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 140.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -25.38652
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906261021444734666, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3036654534118283259, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: m_Name
+      value: LeaderboardCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6397540341677210400, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
+      propertyPath: headCamera
+      value: 
+      objectReference: {fileID: 963094352}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cc875943d414ba6479c29ff9f41dc5af, type: 3}
 --- !u!4 &963094352 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2710449129988704832, guid: 53616a54c89463649a046c603e48bc94, type: 3}
@@ -2083,8 +2218,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb9f56d9b365474181af7cc26baeb7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  isFinish: 0
   bonusTime: 15
+  fadeDuration: 0.5
+  arrow: {fileID: 0}
+  ringRenderer: {fileID: 0}
+  arrowRenderer: {fileID: 0}
+  finishFlagVisual: {fileID: 0}
 --- !u!1 &1190763424 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: cdff5502e67a73e418dd4ca9682a8fd8, type: 3}
@@ -2170,8 +2309,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb9f56d9b365474181af7cc26baeb7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  isFinish: 0
   bonusTime: 15
+  fadeDuration: 0.5
+  arrow: {fileID: 0}
+  ringRenderer: {fileID: 0}
+  arrowRenderer: {fileID: 0}
+  finishFlagVisual: {fileID: 0}
 --- !u!1001 &1264405452
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2358,7 +2501,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2171894728802317386, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1519687320}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1544679779242766064, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2070685880}
   m_SourcePrefab: {fileID: 100100000, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
 --- !u!1 &1290037559
 GameObject:
@@ -3372,6 +3518,27 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &2070685876 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1544679779242766064, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+  m_PrefabInstance: {fileID: 1264405452}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2070685880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070685876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9873a27e138c1a24fa7c864adbb7c913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DebugScript
+  forceAmount: 10
+  forceMode: 0
+  useLocalDirection: 1
+  continuousForce: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3387,3 +3554,4 @@ SceneRoots:
   - {fileID: 571050879}
   - {fileID: 1290037561}
   - {fileID: 1811567934}
+  - {fileID: 948327977}

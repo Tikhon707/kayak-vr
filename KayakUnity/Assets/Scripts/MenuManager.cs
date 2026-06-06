@@ -73,15 +73,14 @@ public class MenuManager : MonoBehaviour
             }
         }
 
-        Debug.Log($"[MenuManager] ShowVictory finalTime={finalTime}, leaderboardUI={(leaderboardUI == null ? "NULL" : leaderboardUI.name)}, currentName='{PlayerProfile.CurrentName}'");
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (PlayerProfile.HasName)
+            LeaderboardService.AddRecord(sceneName, PlayerProfile.CurrentName, finalTime);
+
         if (leaderboardUI != null)
-        {
-            leaderboardUI.Show(SceneManager.GetActiveScene().name, PlayerProfile.CurrentName);
-        }
+            leaderboardUI.Show(sceneName, PlayerProfile.CurrentName);
         else
-        {
             Debug.LogWarning("[MenuManager] leaderboardUI is not assigned in inspector");
-        }
     }
 
     public void ShowGameOver()

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class CheckpointManager : MonoBehaviour
 {
@@ -80,16 +79,6 @@ public class CheckpointManager : MonoBehaviour
 
     public void OnFinish(float finalTime)
     {
-        if (PlayerProfile.HasName)
-        {
-            string scene = SceneManager.GetActiveScene().name;
-            LeaderboardService.AddRecord(scene, PlayerProfile.CurrentName, finalTime);
-        }
-        else
-        {
-            Debug.LogWarning("[Leaderboard] Skipped submit: no player selected");
-        }
-
         if (audioSource && finishClip) audioSource.PlayOneShot(finishClip);
     }
 
