@@ -190,6 +190,8 @@ GameObject:
   - component: {fileID: 48642246}
   - component: {fileID: 48642248}
   - component: {fileID: 48642247}
+  - component: {fileID: 48642250}
+  - component: {fileID: 48642249}
   m_Layer: 0
   m_Name: SplinePoint
   m_TagString: Untagged
@@ -239,6 +241,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Crest::Crest.Spline.SplinePoint
   _version: 0
+--- !u!114 &48642249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48642245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195788a19db58f145908f7b22a193f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataWaves
+  _version: 0
+  _weight: 1
+--- !u!114 &48642250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48642245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdd42d729f2b1446ac97aaedcf7694a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataFlow
+  _version: 0
+  _flowVelocity: 2
 --- !u!1 &79422160
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,6 +370,8 @@ GameObject:
   - component: {fileID: 88896859}
   - component: {fileID: 88896861}
   - component: {fileID: 88896860}
+  - component: {fileID: 88896863}
+  - component: {fileID: 88896862}
   m_Layer: 0
   m_Name: SplinePoint
   m_TagString: Untagged
@@ -389,6 +421,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Crest::Crest.Spline.SplinePoint
   _version: 0
+--- !u!114 &88896862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 88896858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195788a19db58f145908f7b22a193f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataWaves
+  _version: 0
+  _weight: 1
+--- !u!114 &88896863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 88896858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdd42d729f2b1446ac97aaedcf7694a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataFlow
+  _version: 0
+  _flowVelocity: 2
 --- !u!1 &90205900
 GameObject:
   m_ObjectHideFlags: 0
@@ -953,6 +1013,8 @@ GameObject:
   - component: {fileID: 188716615}
   - component: {fileID: 188716617}
   - component: {fileID: 188716616}
+  - component: {fileID: 188716619}
+  - component: {fileID: 188716618}
   m_Layer: 0
   m_Name: SplinePoint
   m_TagString: Untagged
@@ -1002,6 +1064,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Crest::Crest.Spline.SplinePoint
   _version: 0
+--- !u!114 &188716618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 188716614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195788a19db58f145908f7b22a193f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataWaves
+  _version: 0
+  _weight: 1
+--- !u!114 &188716619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 188716614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdd42d729f2b1446ac97aaedcf7694a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataFlow
+  _version: 0
+  _flowVelocity: 2
 --- !u!1 &191742334
 GameObject:
   m_ObjectHideFlags: 0
@@ -3861,6 +3951,8 @@ GameObject:
   - component: {fileID: 744307756}
   - component: {fileID: 744307758}
   - component: {fileID: 744307757}
+  - component: {fileID: 744307760}
+  - component: {fileID: 744307759}
   m_Layer: 0
   m_Name: SplinePoint
   m_TagString: Untagged
@@ -3910,6 +4002,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Crest::Crest.Spline.SplinePoint
   _version: 0
+--- !u!114 &744307759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 744307755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195788a19db58f145908f7b22a193f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataWaves
+  _version: 0
+  _weight: 1
+--- !u!114 &744307760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 744307755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdd42d729f2b1446ac97aaedcf7694a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataFlow
+  _version: 0
+  _flowVelocity: 2
 --- !u!1 &749945780
 GameObject:
   m_ObjectHideFlags: 0
@@ -3921,6 +4041,8 @@ GameObject:
   - component: {fileID: 749945781}
   - component: {fileID: 749945783}
   - component: {fileID: 749945782}
+  - component: {fileID: 749945785}
+  - component: {fileID: 749945784}
   m_Layer: 0
   m_Name: SplinePoint
   m_TagString: Untagged
@@ -3970,6 +4092,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Crest::Crest.Spline.SplinePoint
   _version: 0
+--- !u!114 &749945784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749945780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195788a19db58f145908f7b22a193f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataWaves
+  _version: 0
+  _weight: 1
+--- !u!114 &749945785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749945780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdd42d729f2b1446ac97aaedcf7694a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataFlow
+  _version: 0
+  _flowVelocity: 2
 --- !u!4 &763147198 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7515463736320047275, guid: f680af2b9d0ed4006be2e7778f465b4d, type: 3}
@@ -4830,7 +4980,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Crest::Crest.SplinePointData
   _version: 0
-  _radiusMultiplier: 2.64
+  _radiusMultiplier: 2.48
 --- !u!114 &862027031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5375,6 +5525,8 @@ GameObject:
   - component: {fileID: 908740945}
   - component: {fileID: 908740947}
   - component: {fileID: 908740946}
+  - component: {fileID: 908740949}
+  - component: {fileID: 908740948}
   m_Layer: 0
   m_Name: SplinePoint
   m_TagString: Untagged
@@ -5424,6 +5576,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Crest::Crest.Spline.SplinePoint
   _version: 0
+--- !u!114 &908740948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908740944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195788a19db58f145908f7b22a193f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataWaves
+  _version: 0
+  _weight: 1
+--- !u!114 &908740949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908740944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdd42d729f2b1446ac97aaedcf7694a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataFlow
+  _version: 0
+  _flowVelocity: 2
 --- !u!1 &918072308 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5066590779802998754, guid: 5863b7662d5b9fb4e8903cae6eec69a8, type: 3}
@@ -6205,6 +6385,8 @@ GameObject:
   - component: {fileID: 1047665906}
   - component: {fileID: 1047665908}
   - component: {fileID: 1047665907}
+  - component: {fileID: 1047665910}
+  - component: {fileID: 1047665909}
   m_Layer: 0
   m_Name: SplinePoint
   m_TagString: Untagged
@@ -6254,6 +6436,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Crest::Crest.Spline.SplinePoint
   _version: 0
+--- !u!114 &1047665909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047665905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195788a19db58f145908f7b22a193f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataWaves
+  _version: 0
+  _weight: 1
+--- !u!114 &1047665910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047665905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdd42d729f2b1446ac97aaedcf7694a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Crest::Crest.SplinePointDataFlow
+  _version: 0
+  _flowVelocity: 2
 --- !u!54 &1095289339 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 3779525992458999987, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
