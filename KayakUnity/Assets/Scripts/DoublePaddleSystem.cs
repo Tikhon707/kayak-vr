@@ -46,6 +46,8 @@ public class DoublePaddleSystem : MonoBehaviour
     public float recoveryDrag = 0.5f;
     public float minEfficiency = 0.1f;
     public float maxEfficiency = 1.0f;
+    public float waterDragCoefficient = 1.0f;
+    public float turnForce = 50f;
 
     [Header("Collision Prevention")]
     public LayerMask blockingLayers;
@@ -71,8 +73,13 @@ public class DoublePaddleSystem : MonoBehaviour
 
     private Vector3 constrainedLeftPos, constrainedRightPos;
 
+    private InputSystem_Actions  turnAction;
+
     void Awake()
     {
+        turnAction = new InputSystem_Actions();
+        turnAction.Enable();
+        
         rb = GetComponent<Rigidbody>();
         if (leftBlade?.bladeTip != null) lastLeftTip = leftBlade.bladeTip.position;
         if (rightBlade?.bladeTip != null) lastRightTip = rightBlade.bladeTip.position;
@@ -143,6 +150,11 @@ public class DoublePaddleSystem : MonoBehaviour
 
         ProcessBlade(leftBlade, ref lastLeftTip, ref leftInWater, _leftHeightHelper, _leftFlowHelper);
         ProcessBlade(rightBlade, ref lastRightTip, ref rightInWater, _rightHeightHelper, _rightFlowHelper);
+
+        float input = turnAction.Player.TurnKayak.ReadValue<float>();
+        rb.AddTorque(
+            Vector3.up * input * turnForce,
+            ForceMode.Force);
     }
 
     void ProcessBlade(Blade blade, ref Vector3 lastPos, ref bool wasInWater, SampleHeightHelper heightHelper, SampleFlowHelper flowHelper)
@@ -186,13 +198,37 @@ public class DoublePaddleSystem : MonoBehaviour
                 blade.bladeAudio.volume = Mathf.Lerp(blade.bladeAudio.volume, calculatedVolume, Time.fixedDeltaTime * 8f);
             }
 
-            // ������: ���������� ���� ������
-            Vector3 localVel = transform.InverseTransformDirection(relVel);
-            float angleEff = Mathf.Lerp(minEfficiency, maxEfficiency, Mathf.Pow(Mathf.Abs(Vector3.Dot(blade.bladeRoot.up, Vector3.up)), 2));
-
-            if (localVel.z < -0.1f) // ����� �����
+            if (velocity.magnitude < 0.1f) //speed paddle < porog ==> +drag; else gazuem
             {
-                rb.AddForceAtPosition(transform.forward * Mathf.Clamp(-localVel.z, 0f, maxEffectiveSpeed) * forceMultiplier * angleEff, current, ForceMode.Force);
+                Vector3 bladeNormal = blade.bladeRoot.right;
+                Vector3 dragForce =
+                    -bladeNormal *
+                    Vector3.Dot(relVel, bladeNormal) *
+                    waterDragCoefficient; // schiteam eff sily tormozheniya
+
+                rb.AddForceAtPosition(
+                    dragForce,
+                    current,
+                    ForceMode.Force);
+            }
+            else
+            {
+                // ������: ���������� ���� ������
+                Vector3 localVel = transform.InverseTransformDirection(relVel);
+                float angleEff = Mathf.Lerp(minEfficiency, maxEfficiency, Mathf.Pow(Mathf.Abs(Vector3.Dot(blade.bladeRoot.up, Vector3.up)), 2));
+
+                float paddleForce =
+                Mathf.Clamp(localVel.z,
+                            -maxEffectiveSpeed,
+                            maxEffectiveSpeed); // naxodim skorost vesla v promezhutke
+
+                rb.AddForceAtPosition(
+                    -transform.forward *
+                    paddleForce *
+                    forceMultiplier *
+                    angleEff,
+                    current,
+                    ForceMode.Force); // dobavlyaem uskorenie kayaky
             }
         }
         else if (wasInWater)
