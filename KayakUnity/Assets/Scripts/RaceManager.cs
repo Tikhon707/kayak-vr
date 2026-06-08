@@ -19,7 +19,10 @@ public class RaceManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI countdownText;
 
-    [Header("ScoreManager")] protected IScoreManager _scoreManager;
+    [Header("ScoreManager")] [SerializeField]
+    private GameObject scoreManagerObj;
+
+    private IScoreManager _scoreManager;
 
     public enum RaceState
     {
@@ -38,7 +41,7 @@ public class RaceManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
-        _scoreManager = GetComponent<IScoreManager>();
+        _scoreManager = scoreManagerObj.GetComponent<IScoreManager>();
     }
 
     private void Start()
@@ -108,8 +111,8 @@ public class RaceManager : MonoBehaviour
 
         if (missedCount > 0)
         {
-           // Debug.Log(
-                //$"[RaceManager] Penalties applied: {missedCount} missed x {penaltyPerMissedCheckpoint}s = +{penaltyTime}s");
+            // Debug.Log(
+            //$"[RaceManager] Penalties applied: {missedCount} missed x {penaltyPerMissedCheckpoint}s = +{penaltyTime}s");
         }
 
 

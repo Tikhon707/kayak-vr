@@ -2730,6 +2730,7 @@ MonoBehaviour:
   playerKayak: {fileID: 1095289339}
   countdownMenu: {fileID: 879674423}
   countdownText: {fileID: 1829371068}
+  scoreManagerObj: {fileID: 940181618}
   currentState: 0
 --- !u!114 &940181625
 MonoBehaviour:
