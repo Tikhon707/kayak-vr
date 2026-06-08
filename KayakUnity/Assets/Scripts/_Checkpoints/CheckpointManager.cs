@@ -1,15 +1,17 @@
 using UnityEngine;
 
-public class CheckpointManager : MonoBehaviour
+public class CheckpointManager : MonoBehaviour, IScoreManager
 {
     public static CheckpointManager Instance;
 
     [SerializeField] private BoatDashboard dashboard;
 
-    [Header("SFX")]
-    [SerializeField] private AudioSource audioSource;
+    [Header("SFX")] [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip checkpointClip;
     [SerializeField] private AudioClip finishClip;
+
+    [Header("Penalty Settings")] [SerializeField]
+    private float penaltyPerMissedCheckpoint = 5f;
 
     [SerializeField] private int totalCheckpoints;
 
@@ -51,6 +53,16 @@ public class CheckpointManager : MonoBehaviour
                 last.ShowFinishFlag();
             }
         }
+    }
+
+    public int GetMissedScores()
+    {
+        return Mathf.Max(0, totalCheckpoints - _passedCount);
+    }
+
+    public float GetScore(float finishTime)
+    {
+        return finishTime + GetMissedScores() * penaltyPerMissedCheckpoint;
     }
 
     private void OnEnable()

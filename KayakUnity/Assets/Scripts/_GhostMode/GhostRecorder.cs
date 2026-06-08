@@ -51,7 +51,7 @@ public class GhostRecorder : MonoBehaviour
 
     private void RecordFrame()
     {
-        if (kayakTransform == null) return;
+        if (!kayakTransform) return;
 
         GhostFrame newFrame = new GhostFrame
         {
