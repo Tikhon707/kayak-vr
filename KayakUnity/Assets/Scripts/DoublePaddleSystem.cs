@@ -55,8 +55,9 @@ public class DoublePaddleSystem : MonoBehaviour
     public float shaftCollisionRadius = 0.03f;
     public int shaftCheckPoints = 5;
 
-    [Header("Crest Integration")]
-    public float minSpatialLength = 1f;
+    [Header("Water Provider")]
+    public GameObject waterProviderObject;
+    private IWaterSurfaceProvider waterProvider;
 
     [Header("Debug")]
     public bool showDebugInfo = true;
@@ -66,13 +67,7 @@ public class DoublePaddleSystem : MonoBehaviour
     private bool leftInWater, rightInWater;
     private bool isPaddleActive = false;
 
-
-    private SampleHeightHelper _leftHeightHelper, _rightHeightHelper;
-    private SampleFlowHelper _leftFlowHelper, _rightFlowHelper;
-    private bool _initialized = false;
-
     private Vector3 constrainedLeftPos, constrainedRightPos;
-
     private InputSystem_Actions  turnAction;
 
     void Awake()
@@ -86,6 +81,11 @@ public class DoublePaddleSystem : MonoBehaviour
 
         constrainedLeftPos = leftController != null ? leftController.position : Vector3.zero;
         constrainedRightPos = rightController != null ? rightController.position : Vector3.zero;
+
+        if (waterProviderObject != null)
+        {
+            waterProvider = waterProviderObject.GetComponent<IWaterSurfaceProvider>();
+        }
     }
 
     void Update()
@@ -130,17 +130,6 @@ public class DoublePaddleSystem : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (OceanRenderer.Instance == null) return; // �������� ������� ������� Crest [cite: 312]
-
-        if (!_initialized)
-        {
-            _leftHeightHelper = new SampleHeightHelper();
-            _rightHeightHelper = new SampleHeightHelper();
-            _leftFlowHelper = new SampleFlowHelper();
-            _rightFlowHelper = new SampleFlowHelper();
-            _initialized = true;
-        }
-
         if (!isPaddleActive)
         {
             leftInWater = false; rightInWater = false;
@@ -148,8 +137,8 @@ public class DoublePaddleSystem : MonoBehaviour
             return;
         }
 
-        ProcessBlade(leftBlade, ref lastLeftTip, ref leftInWater, _leftHeightHelper, _leftFlowHelper);
-        ProcessBlade(rightBlade, ref lastRightTip, ref rightInWater, _rightHeightHelper, _rightFlowHelper);
+        ProcessBlade(leftBlade, ref lastLeftTip, ref leftInWater);
+        ProcessBlade(rightBlade, ref lastRightTip, ref rightInWater);
 
         float input = turnAction.Player.TurnKayak.ReadValue<float>();
         rb.AddTorque(
@@ -157,7 +146,7 @@ public class DoublePaddleSystem : MonoBehaviour
             ForceMode.Force);
     }
 
-    void ProcessBlade(Blade blade, ref Vector3 lastPos, ref bool wasInWater, SampleHeightHelper heightHelper, SampleFlowHelper flowHelper)
+    void ProcessBlade(Blade blade, ref Vector3 lastPos, ref bool wasInWater)
     {
         Vector3 current = blade.bladeTip.position;
         Vector3 velocity = (current - lastPos) / Time.fixedDeltaTime;
@@ -166,12 +155,11 @@ public class DoublePaddleSystem : MonoBehaviour
         // ���� ������� ������ ����� � ���������� ����
         if (Physics.CheckSphere(current, bladeCollisionRadius, blockingLayers)) { wasInWater = false; return; }
 
-
-        heightHelper.Init(current, minSpatialLength);
-        if (!heightHelper.Sample(out float waterHeight, out _, out Vector3 waterVelocity)) return;
-
-        flowHelper.Init(current, minSpatialLength);
-        if (flowHelper.Sample(out Vector2 flow2D)) waterVelocity += new Vector3(flow2D.x, 0f, flow2D.y);
+        if (waterProvider == null || !waterProvider.GetWaterData(current, out float waterHeight, out Vector3 waterVelocity))
+        {
+            wasInWater = false;
+            return;
+        }
 
         bool currentlyInWater = current.y < waterHeight + bladeDepthThreshold;
 
