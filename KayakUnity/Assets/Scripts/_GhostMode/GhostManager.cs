@@ -6,13 +6,14 @@ public class GhostManager : MonoBehaviour
 {
     public static GhostManager Instance;
 
-    [Header("Ghost Components")]
-    [SerializeField] private GhostRecorder recorder;
+    [Header("Ghost Components")] [SerializeField]
+    private GhostRecorder recorder;
+
     [SerializeField] private GhostPlayer player;
 
     private GhostRun bestRun;
     private float bestTime = float.MaxValue;
-    
+
     // Свойство для получения ID текущей сцены
     private string SceneID => SceneManager.GetActiveScene().name;
     private string SavePath => Application.persistentDataPath + $"/best_ghost_{SceneID}.json";
@@ -31,14 +32,14 @@ public class GhostManager : MonoBehaviour
     private void OnEnable()
     {
         RaceManager.OnRaceStarted += StartGhostSystem;
-        RaceManager.OnRaceFinished += OnRaceFinishedHandler;
+        TimeAttackManager.OnRaceFinished += OnRaceFinishedHandler;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable()
     {
         RaceManager.OnRaceStarted -= StartGhostSystem;
-        RaceManager.OnRaceFinished -= OnRaceFinishedHandler;
+        TimeAttackManager.OnRaceFinished -= OnRaceFinishedHandler;
     }
 
     private void OnRaceFinishedHandler(float finalTime, int missedCount, float penaltyTime)
@@ -56,12 +57,12 @@ public class GhostManager : MonoBehaviour
 
     public void StartGhostSystem()
     {
-        if (recorder != null)
+        if (recorder)
         {
             recorder.StartRecording();
         }
 
-        if (player != null && bestRun != null && bestRun.frames.Count > 0)
+        if (player && bestRun != null && bestRun.frames.Count > 0)
         {
             player.PlayRun(bestRun);
         }

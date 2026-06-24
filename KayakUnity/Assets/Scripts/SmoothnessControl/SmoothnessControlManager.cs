@@ -1,14 +1,15 @@
-using System.Linq;
+using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class SmoothnessControlManager : MonoBehaviour, IScoreManager
+public class SmoothnessControlManager : BaseScoreManager
 {
+    public static event Action<float, int> OnRaceFinished;
     public GameObject cubesObj;
 
     public float missCubePenalty = 10f;
     public float timePenalty = 2f;
-    public float initScore = 5000f;
+    public float initScore = 500f;
 
     private int _totalCubes;
     private int _missedCubes;
@@ -36,14 +37,9 @@ public class SmoothnessControlManager : MonoBehaviour, IScoreManager
         }
     }
 
-    public int GetMissedScores()
-    {
-        return Mathf.Max(0, _missedCubes);
-    }
-
     public float GetScore(float finishTime)
     {
-        return initScore - (finishTime * timePenalty + missCubePenalty * _missedCubes);
+        return Mathf.Max(0, initScore - (finishTime * timePenalty + missCubePenalty * _missedCubes));
     }
 
     private void MissCube()
@@ -51,13 +47,18 @@ public class SmoothnessControlManager : MonoBehaviour, IScoreManager
         _missedCubes++;
     }
 
-    private void OnEnable()
+    protected override void OnEnableCustom()
     {
         Bottom.MissedCube += MissCube;
     }
 
-    private void OnDisable()
+    protected override void OnDisableCustom()
     {
         Bottom.MissedCube -= MissCube;
+    }
+
+    public override void Finish(float time)
+    {
+        OnRaceFinished?.Invoke(GetScore(time), _missedCubes);
     }
 }

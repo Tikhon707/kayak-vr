@@ -6,8 +6,7 @@ public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance;
 
-    [Header("Panels")]
-    [SerializeField] private GameObject mainMenuPanel;
+    [Header("Panels")] [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject victoryPanel;
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject pausePanel;
@@ -16,7 +15,6 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI penaltyInfoText;
 
     [SerializeField] private LeaderboardUI leaderboardUI;
-
 
     private void Awake()
     {
@@ -29,14 +27,18 @@ public class MenuManager : MonoBehaviour
     private void OnEnable()
     {
         RaceManager.OnRaceStarted += OnStartGameButton;
-        RaceManager.OnRaceFinished += ShowVictory;
+        //RaceManager.OnRaceFinished += ShowVictory;
+        TimeAttackManager.OnRaceFinished += ShowVictory;
+        SmoothnessControlManager.OnRaceFinished += ShowVictorySmoothness;
         AdrenalineManager.OnBombExploded += ShowGameOver;
     }
 
     private void OnDisable()
     {
         RaceManager.OnRaceStarted -= OnStartGameButton;
-        RaceManager.OnRaceFinished -= ShowVictory;
+        //RaceManager.OnRaceFinished -= ShowVictory;
+        TimeAttackManager.OnRaceFinished -= ShowVictory;
+        SmoothnessControlManager.OnRaceFinished -= ShowVictorySmoothness;
         AdrenalineManager.OnBombExploded -= ShowGameOver;
     }
 
@@ -83,11 +85,47 @@ public class MenuManager : MonoBehaviour
             Debug.LogWarning("[MenuManager] leaderboardUI is not assigned in inspector");
     }
 
+    public void ShowVictorySmoothness(float scores, int missedCount)
+    {
+        HideAllPanels();
+        victoryPanel.SetActive(true);
+
+        if (victoryTimeText != null)
+        {
+            victoryTimeText.text = string.Format("SCORE: " + scores);
+        }
+
+        if (penaltyInfoText != null)
+        {
+            if (missedCount > 0)
+            {
+                penaltyInfoText.gameObject.SetActive(true);
+                penaltyInfoText.text = $"MISSED CUBES: {missedCount}";
+                penaltyInfoText.color = Color.red;
+            }
+            else
+            {
+                penaltyInfoText.gameObject.SetActive(true);
+                penaltyInfoText.text = "PERFECT RUN! NO PENALTIES";
+                penaltyInfoText.color = Color.green;
+            }
+        }
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (PlayerProfile.HasName)
+            LeaderboardService.AddRecord(sceneName, PlayerProfile.CurrentName, scores);
+
+        if (leaderboardUI != null)
+            leaderboardUI.Show(sceneName, PlayerProfile.CurrentName);
+        else
+            Debug.LogWarning("[MenuManager] leaderboardUI is not assigned in inspector");
+    }
+
     public void ShowGameOver()
     {
         HideAllPanels();
 
-        if (RaceManager.Instance != null)
+        if (RaceManager.Instance)
         {
             RaceManager.Instance.currentState = RaceManager.RaceState.Finished;
         }

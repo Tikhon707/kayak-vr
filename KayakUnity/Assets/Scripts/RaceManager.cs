@@ -9,7 +9,7 @@ public class RaceManager : MonoBehaviour
 
     // --- EVENTS ---
     public static event Action OnRaceStarted;
-    public static event Action<float, int, float> OnRaceFinished;
+    public static event Action<float> OnRaceFinished;
 
     [Header("Components")] [SerializeField]
     private Rigidbody playerKayak;
@@ -22,7 +22,7 @@ public class RaceManager : MonoBehaviour
     [Header("ScoreManager")] [SerializeField]
     private GameObject scoreManagerObj;
 
-    private IScoreManager _scoreManager;
+    private BaseScoreManager _baseScoreManager;
 
     public enum RaceState
     {
@@ -34,19 +34,18 @@ public class RaceManager : MonoBehaviour
 
     public RaceState currentState = RaceState.Waiting;
 
-    private float currentRaceTime = 0f;
-    public float CurrentRaceTime => currentRaceTime;
+    private float _currentRaceTime = 0f;
+    public float CurrentRaceTime => _currentRaceTime;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
-        _scoreManager = scoreManagerObj.GetComponent<IScoreManager>();
+        _baseScoreManager = scoreManagerObj.GetComponent<BaseScoreManager>();
     }
 
     private void Start()
     {
-        // Clear countdown UI on start just in case
         if (countdownMenu != null)
             countdownMenu.SetActive(false);
 
@@ -57,31 +56,31 @@ public class RaceManager : MonoBehaviour
     {
         currentState = RaceState.Countdown;
 
-        if (playerKayak != null)
+        if (playerKayak)
             playerKayak.isKinematic = true;
 
-        if (countdownMenu != null)
+        if (countdownMenu)
             countdownMenu.SetActive(true);
 
         int count = 3;
         while (count > 0)
         {
-            if (countdownText != null)
+            if (countdownText)
                 countdownText.text = count.ToString();
 
             yield return new WaitForSeconds(1f);
             count--;
         }
 
-        if (countdownText != null)
+        if (countdownText)
             countdownText.text = "GO!";
 
         yield return new WaitForSeconds(0.5f);
 
-        if (countdownMenu != null)
+        if (countdownMenu)
             countdownMenu.SetActive(false);
 
-        if (playerKayak != null)
+        if (playerKayak)
             playerKayak.isKinematic = false;
 
         StartRace();
@@ -90,49 +89,26 @@ public class RaceManager : MonoBehaviour
     private void StartRace()
     {
         currentState = RaceState.Racing;
-        currentRaceTime = 0f;
+        _currentRaceTime = 0f;
 
         OnRaceStarted?.Invoke();
     }
 
     public void OnTriggerFinishLine()
     {
-        if (_scoreManager == null)
+        if (_baseScoreManager == null)
             return;
         if (currentState != RaceState.Racing) return;
 
         currentState = RaceState.Finished;
-
-        float penaltyTime = 0f;
-        int missedCount = 0;
-
-        missedCount = _scoreManager.GetMissedScores();
-        //penaltyTime = missedCount * penaltyPerMissedCheckpoint;
-
-        if (missedCount > 0)
-        {
-            // Debug.Log(
-            //$"[RaceManager] Penalties applied: {missedCount} missed x {penaltyPerMissedCheckpoint}s = +{penaltyTime}s");
-        }
-
-
-        //float finalTotalTime = currentRaceTime + penaltyTime;
-        var finalTotalTime = _scoreManager.GetScore(currentRaceTime);
-
-        if (GhostManager.Instance != null && GhostManager.Instance.enabled)
-        {
-            // Pass finalTotalTime instead of currentRaceTime so the ghost record accounts for penalties
-            GhostManager.Instance.StopGhostSystem(finalTotalTime);
-        }
-
-        OnRaceFinished?.Invoke(finalTotalTime, missedCount, penaltyTime);
+        OnRaceFinished?.Invoke(_currentRaceTime);
     }
 
     private void Update()
     {
         if (currentState == RaceState.Racing)
         {
-            currentRaceTime += Time.deltaTime;
+            _currentRaceTime += Time.deltaTime;
         }
     }
 }

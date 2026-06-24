@@ -842,7 +842,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &4171431781344094208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -872,7 +872,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ff34da85dd016a4180bc241dedd7b84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoatDashboard
-  timeLimitInSeconds: 120
   timerText: {fileID: 7853333907809093483}
   ghostDifferTimer: {fileID: 7476666559214565407}
   checkpointText: {fileID: 7273913821312882365}

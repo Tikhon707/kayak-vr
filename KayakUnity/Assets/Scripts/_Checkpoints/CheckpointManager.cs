@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CheckpointManager : MonoBehaviour, IScoreManager
+public class CheckpointManager : MonoBehaviour
 {
     public static CheckpointManager Instance;
 
@@ -75,7 +75,7 @@ public class CheckpointManager : MonoBehaviour, IScoreManager
         RaceManager.OnRaceFinished -= HandleFinishEvent;
     }
 
-    private void HandleFinishEvent(float finalTime, int missedCount, float penaltyTime)
+    private void HandleFinishEvent(float finalTime)
     {
         OnFinish(finalTime);
     }

@@ -7,9 +7,8 @@ public class Bottom : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
-        if (!collision.gameObject.CompareTag("Player"))
-        {
-            MissedCube?.Invoke();
-        }
+        if (collision.gameObject.CompareTag("Player")) return;
+        Destroy(collision.gameObject);
+        MissedCube?.Invoke();
     }
 }
