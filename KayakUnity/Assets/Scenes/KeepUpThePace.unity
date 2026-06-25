@@ -8169,6 +8169,7 @@ GameObject:
   - component: {fileID: 940181621}
   - component: {fileID: 940181623}
   - component: {fileID: 940181624}
+  - component: {fileID: 940181625}
   m_Layer: 0
   m_Name: RaceManageScripts
   m_TagString: Untagged
@@ -8234,7 +8235,7 @@ MonoBehaviour:
   playerKayak: {fileID: 1095289339}
   countdownMenu: {fileID: 918072308}
   countdownText: {fileID: 728631871}
-  scoreManagerObj: {fileID: 0}
+  scoreManagerObj: {fileID: 940181618}
   currentState: 0
 --- !u!114 &940181624
 MonoBehaviour:
@@ -8250,6 +8251,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GhostManager
   recorder: {fileID: 940181621}
   player: {fileID: 940181622}
+--- !u!114 &940181625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940181618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0d43c1a5ae8a844596061b78b021a0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimeAttackManager
+  penaltyPerMissedCheckpoint: 5
 --- !u!1001 &947071737
 PrefabInstance:
   m_ObjectHideFlags: 0
